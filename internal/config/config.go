@@ -1,4 +1,4 @@
-// Package config defines the per-repository Grove configuration (`.wt.json`).
+// Package config defines the per-repository Grove configuration (`.grove.json`).
 //
 // The schema exists to keep every project-specific fact — service names, port
 // bands, package manager, database driver, env keys — out of the tool itself.
@@ -16,7 +16,20 @@ import (
 // FileName is the per-repository config, committed to git so a team shares one
 // definition. Machine-specific state (band assignment, slot table) lives in the
 // user's Grove home instead — see package registry.
-const FileName = ".wt.json"
+const FileName = ".grove.json"
+
+// Per-worktree marker files. They live in the worktree root, are gitignored,
+// and record what was provisioned there so later commands do not have to guess.
+const (
+	// ModeFile holds "frontend" or "fullstack".
+	ModeFile = ".grove-mode"
+	// DepsFile holds "real" (own dependencies) or "light" (shared with main).
+	DepsFile = ".grove-deps"
+	// DBProfileFile holds the database profile this worktree was seeded from.
+	DBProfileFile = ".grove-db-profile"
+	// RunDir holds the background runner's per-service pid and log files.
+	RunDir = ".grove-run"
+)
 
 // SchemaVersion is bumped only on breaking schema changes.
 const SchemaVersion = 1
@@ -192,7 +205,7 @@ func (c *Config) Bands() []int {
 	return out
 }
 
-// Load reads the config at root/.wt.json.
+// Load reads the config at root/.grove.json.
 func Load(root string) (*Config, error) {
 	p := filepath.Join(root, FileName)
 	b, err := os.ReadFile(p)
@@ -211,7 +224,7 @@ func Load(root string) (*Config, error) {
 	return &c, nil
 }
 
-// Save writes the config to root/.wt.json.
+// Save writes the config to root/.grove.json.
 func (c *Config) Save(root string) error {
 	c.Version = SchemaVersion
 	b, err := json.MarshalIndent(c, "", "  ")

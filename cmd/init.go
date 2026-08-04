@@ -24,19 +24,19 @@ var (
 
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "Detect this repository and write .wt.json",
+	Short: "Detect this repository and write .grove.json",
 	Long: `Inspects the repository — package manager, workspaces, dev scripts, how each
 service takes its port, Prisma, docker-compose — proposes a configuration, and
-writes .wt.json after you confirm it.
+writes .grove.json after you confirm it.
 
-Port bands are reserved in ~/.wt so they cannot collide with another project on
+Port bands are reserved in ~/.grove so they cannot collide with another project on
 this machine, or with well-known defaults like 3000, 5173 and 5432.`,
 	RunE: runInit,
 }
 
 func init() {
 	initCmd.Flags().BoolVarP(&initYes, "yes", "y", false, "accept everything detected without prompting")
-	initCmd.Flags().BoolVar(&initForce, "force", false, "overwrite an existing .wt.json")
+	initCmd.Flags().BoolVar(&initForce, "force", false, "overwrite an existing .grove.json")
 	initCmd.Flags().BoolVar(&initDry, "dry-run", false, "print the proposed config without writing it")
 	rootCmd.AddCommand(initCmd)
 }
@@ -106,7 +106,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 			return err
 		}
 		if !proceed {
-			return fmt.Errorf("aborted — adjust the bands and run `%s init` again", Name())
+			return fmt.Errorf("aborted — adjust the bands and run `grove init` again")
 		}
 	}
 
@@ -134,7 +134,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 	ui.Ok("wrote %s", filepath.Join(root, config.FileName))
 	ui.Ok("reserved bands %s in %s", bandList(cfg.Bands()), registry.Home())
 	fmt.Println()
-	ui.Info("Next: `%s create <name>` to provision a worktree, `%s ports` to see the table.", Name(), Name())
+	ui.Info("Next: `grove create <name>` to provision a worktree, `grove ports` to see the table.")
 	return nil
 }
 
@@ -357,7 +357,7 @@ func promptConfig(cfg *config.Config, d *detect.Result, reg *registry.Registry) 
 		huh.NewGroup(
 			huh.NewInput().
 				Title("Project name").
-				Description("Identifies this repository in ~/.wt and reserves its port bands.").
+				Description("Identifies this repository in ~/.grove and reserves its port bands.").
 				Value(&cfg.Project),
 			huh.NewInput().
 				Title("Worktree directory").
@@ -365,7 +365,7 @@ func promptConfig(cfg *config.Config, d *detect.Result, reg *registry.Registry) 
 				Value(&cfg.WorktreeDir),
 			huh.NewInput().
 				Title("Branch prefix").
-				Description("`"+Name()+" create foo` makes this branch. Leave empty for no prefix.").
+				Description("`grove create foo` makes this branch. Leave empty for no prefix.").
 				Value(&cfg.BranchPrefix),
 			huh.NewInput().
 				Title("Max slots").

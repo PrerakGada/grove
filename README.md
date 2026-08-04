@@ -5,35 +5,28 @@ ports, its own dependencies, its own database, and a background runner — so
 many branches run at once without a terminal each.
 
 ```
-grove init          # detect this repo, write .wt.json, reserve port bands
+grove init          # detect this repo, write .grove.json, reserve port bands
 grove ports         # the allocation table
 grove ports -g      # every project registered on this machine
 grove doctor        # config + registry + machine checks
 ```
 
-`wt` is the short alias for the same binary — Grove reads the name it was
-invoked by, so help and messages say whichever one you type.
 
 ## Install
 
 ```
-make install         # links `grove` into ~/.local/bin
-make install-alias   # also links `wt`
+make install    # links grove into ~/.local/bin
 ```
-
-`install-alias` is separate on purpose: a shell alias named `wt` shadows any
-binary of that name, so it only makes sense once Grove has replaced whatever
-that alias points at.
 
 ## Two files, one rule
 
 | | what | committed? |
 |---|---|---|
-| `.wt.json` | the project's **shape** — services, ports, package manager, database | yes |
-| `~/.wt/registry.json` | this **machine's** allocation — which project owns which band, which worktree holds which slot | no |
+| `.grove.json` | the project's **shape** — services, ports, package manager, database | yes |
+| `~/.grove/registry.json` | this **machine's** allocation — which project owns which band, which worktree holds which slot | no |
 
 Nothing machine-specific ever lands in git, so a teammate clones the repo and
-`wt` works without editing anything.
+`grove` works without editing anything.
 
 ## Ports
 
@@ -49,7 +42,7 @@ backend   8200            8200 + n
 db        5500            5500 + n
 ```
 
-Bands are reserved **globally** in `~/.wt`, so a second project cannot claim a
+Bands are reserved **globally** in `~/.grove`, so a second project cannot claim a
 range that is already spoken for — and neither can it land on 3000, 5173, 5432
 or any other well-known default.
 

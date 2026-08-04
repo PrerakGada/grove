@@ -8,7 +8,7 @@ import (
 	"syscall"
 )
 
-// lock takes an exclusive advisory lock on ~/.wt/registry.lock. It blocks until
+// lock takes an exclusive advisory lock on ~/.grove/registry.lock. It blocks until
 // the lock is available; flock is released automatically if the holder dies, so
 // there is no stale-lock recovery to get wrong.
 func lock() (func(), error) {

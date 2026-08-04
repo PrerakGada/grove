@@ -6,7 +6,7 @@ package registry
 // (see internal/platform), so there is nothing to serialise against; this stub
 // exists only so the package compiles for GOOS=windows in CI.
 //
-// When Windows lands, replace this with LockFileEx on ~/.wt/registry.lock.
+// When Windows lands, replace this with LockFileEx on ~/.grove/registry.lock.
 func lock() (func(), error) {
 	return func() {}, nil
 }

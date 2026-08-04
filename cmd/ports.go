@@ -97,7 +97,7 @@ func printGlobalPorts() error {
 		return err
 	}
 	if len(reg.Projects) == 0 {
-		ui.Info("No projects registered yet. Run `%s init` in a repository.", Name())
+		ui.Info("No projects registered yet. Run `grove init` in a repository.")
 		return nil
 	}
 

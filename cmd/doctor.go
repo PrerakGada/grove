@@ -16,7 +16,7 @@ import (
 var doctorCmd = &cobra.Command{
 	Use:   "doctor",
 	Short: "Check the config, the registry, and this machine",
-	Long: `Validates .wt.json, checks port bands against every other project
+	Long: `Validates .grove.json, checks port bands against every other project
 registered on this machine, and verifies the machine can actually deliver cheap
 per-worktree dependencies.`,
 	RunE: runDoctor,
@@ -54,8 +54,8 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 		proj := reg.Projects[cfg.Project]
 		switch {
 		case proj == nil:
-			ui.Warn("project %q is not registered in %s — run `%s init` to reserve its bands",
-				cfg.Project, registry.Home(), Name())
+			ui.Warn("project %q is not registered in %s — run `grove init` to reserve its bands",
+				cfg.Project, registry.Home())
 			problems++
 		case proj.Root != root:
 			ui.Warn("registry points project %q at %s, but this repository is %s",

@@ -1,6 +1,6 @@
-// Package registry owns Grove's machine-local state, kept in ~/.wt.
+// Package registry owns Grove's machine-local state, kept in ~/.grove.
 //
-// The split matters: `.wt.json` in a repository describes the project's *shape*
+// The split matters: `.grove.json` in a repository describes the project's *shape*
 // and is committed so a team shares one definition. The registry records what
 // this particular machine has handed out — which port block each project owns
 // and which worktree holds which slot. None of that belongs in git.
@@ -63,16 +63,16 @@ type Project struct {
 	Slots    map[string]int `json:"slots"`
 }
 
-// Home is the Grove state directory, ~/.wt unless WT_HOME overrides it.
+// Home is the Grove state directory, ~/.grove unless GROVE_HOME overrides it.
 func Home() string {
-	if h := os.Getenv("WT_HOME"); h != "" {
+	if h := os.Getenv("GROVE_HOME"); h != "" {
 		return h
 	}
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return ".wt"
+		return ".grove"
 	}
-	return filepath.Join(home, ".wt")
+	return filepath.Join(home, ".grove")
 }
 
 func path() string { return filepath.Join(Home(), "registry.json") }

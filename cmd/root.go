@@ -21,30 +21,14 @@ var rootCmd = &cobra.Command{
 reserved ports, its own dependencies, its own database, and a background
 runner, so many branches can run at once without a terminal each.
 
-Project shape lives in .wt.json (committed). Machine state lives in ~/.wt.
-
-"wt" is the short alias — the same program under either name.`,
+Project shape lives in .grove.json (committed). Machine state lives in ~/.grove.`,
 	SilenceUsage:  true,
 	SilenceErrors: true,
 	Version:       Version,
 }
 
-// binName is the name Grove was invoked by, so messages can suggest the command
-// the user actually types instead of always naming one of the two.
-var binName = "grove"
-
-// Name returns the invoked binary name.
-func Name() string { return binName }
-
 // Execute runs the CLI.
-//
-// Usage text follows the name Grove was invoked by, so `wt --help` reads as
-// wt and `grove --help` reads as grove rather than always naming one of them.
 func Execute() {
-	if name := filepath.Base(os.Args[0]); name == "wt" || name == "grove" {
-		binName = name
-		rootCmd.Use = name
-	}
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "\033[31m✗\033[0m %v\n", err)
 		os.Exit(1)

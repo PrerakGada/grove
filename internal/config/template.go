@@ -13,17 +13,17 @@ var placeholder = regexp.MustCompile(`\{\{\s*([a-zA-Z0-9_.]+)\s*\}\}`)
 // Vars are the substitutions available to templated config values.
 //
 // Deliberately a closed set with hard errors on unknown keys: a typo in
-// `.wt.json` should fail at provisioning time, not silently write the literal
+// `.grove.json` should fail at provisioning time, not silently write the literal
 // string "{{port.backand}}" into a worktree's .env.
 type Vars map[string]string
 
 // NewVars builds the standard variable set for one worktree.
 func NewVars(cfg *Config, name, mainRoot, wtPath string, slot int) Vars {
 	v := Vars{
-		"name": name,
-		"slot": strconv.Itoa(slot),
-		"main": mainRoot,
-		"wt":   wtPath,
+		"name":     name,
+		"slot":     strconv.Itoa(slot),
+		"main":     mainRoot,
+		"worktree": wtPath,
 	}
 	for _, s := range cfg.Services {
 		v["port."+s.Name] = strconv.Itoa(s.Band + slot)
