@@ -17,8 +17,10 @@ grove delete payments
 ## Install
 
 ```bash
-make install    # links grove into ~/.local/bin
+go install github.com/PrerakGada/grove@latest
 ```
+
+Or from a clone, `make install` — which links `grove` into `~/.local/bin`.
 
 Requires Go 1.26+. macOS and Linux; on Windows use WSL2.
 
@@ -149,6 +151,10 @@ make build   # bin/grove
 make vet
 make cross   # proves the platform stubs still compile for darwin/linux/windows
 ```
+
+`site/` holds the landing page — Next.js, deployed to Vercel. It is independent
+of the Go build; `pnpm install && pnpm dev` inside it. Every terminal block on
+that page is real captured output, so re-capture rather than hand-edit them.
 
 ## License
 

@@ -42,6 +42,7 @@ no editing; two people on the same project get different slots without conflict.
 | `internal/runner` | detached start, three-pass stop, status |
 | `internal/worktree` | reads `git worktree list` + markers + change counts |
 | `internal/platform` | **every** OS-specific operation. Nothing else may shell out to `lsof`, `pgrep`, `cp -c`, or touch `syscall`. |
+| `site/` | the landing page (Next.js + Tailwind, deployed to Vercel). Not part of the Go build. |
 
 Per-worktree markers, constants in `internal/config`: `.grove-mode`
 (`frontend`|`fullstack`), `.grove-deps` (`real`|`light`), `.grove-db-profile`,
@@ -134,6 +135,22 @@ running against a real repository, and re-breaking them is easy:
   the project already uses. A collision with another *project* is hard.
 
 ---
+
+## The landing page
+
+`site/` argues for the tool by showing it. Two rules make that work:
+
+- **Every terminal block is captured, not written.** They live in
+  `site/src/lib/content.ts`, taken from a real binary run against a scratch
+  monorepo, with only the checkout path rewritten. If output formatting
+  changes, re-capture — do not hand-edit a string to match.
+- **The palette is the CLI's palette.** `internal/ui/ui.go` styles output with
+  ANSI 1–6; the site's tokens are those five roles and nothing else. A new
+  colour on the site means a new colour in the CLI first.
+
+The page also states the gaps — no tests, Postgres-only, WSL2 on Windows —
+because the "Known gaps" list below is the honest version and the site must not
+drift from it.
 
 ## Conventions
 

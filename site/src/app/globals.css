@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/*
+  Grove's palette is not invented — it is the CLI's own.
+  internal/ui/ui.go styles output with ANSI 1-6: green ✓, blue →, yellow !,
+  red ✗, cyan for keys. Those five roles are the entire colour vocabulary of
+  the tool, so they are the entire colour vocabulary of this page.
+
+  Every value below is checked against --bg (#08090a).
+*/
+
+@theme {
+  /* canvas */
+  --color-bg: #08090a; /* page */
+  --color-surface: #0d0f11; /* raised: cards, terminal chrome */
+  --color-surface-2: #131719; /* inset: hover, table stripes */
+  --color-term: #0a0b0d; /* terminal body */
+
+  /* rules */
+  --color-line: #1b1f23;
+  --color-line-strong: #2b3237;
+
+  /* text — contrast vs --color-bg */
+  --color-fg: #e8ebed; /* 16.6:1 */
+  --color-fg-muted: #9aa4ab; /*  7.9:1 */
+  --color-fg-dim: #757f86; /*  4.9:1 */
+
+  /* the CLI's ANSI roles */
+  --color-ok: #3fdb84; /* ANSI 2 · ✓ · also the brand accent */
+  --color-info: #6fa8ff; /* ANSI 4 · → */
+  --color-warn: #f0b429; /* ANSI 3 · ! */
+  --color-err: #ff6b6b; /* ANSI 1 · ✗ */
+  --color-key: #4fd6d6; /* ANSI 6 · config keys */
+
+  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", Menlo,
+    monospace;
+
+  /* a slower, flatter curve than the default — reads as machinery, not bounce */
+  --ease-term: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-ok) 28%, transparent);
+    color: var(--color-fg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ok);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /*
+    Ligature suppression is not polish. JetBrains Mono ligates "--", "<=", "->"
+    and friends — which silently rewrites the captured CLI output this page is
+    built on. Tabular figures keep the port columns aligned.
+  */
+  .font-mono,
+  code,
+  kbd,
+  pre,
+  samp {
+    font-feature-settings: "liga" 0, "calt" 0;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Colour is never the only cue: in forced-colors the accent collapses, so the
+   panels keep a real border and the marks keep their glyphs. */
+@media (forced-colors: active) {
+  .border-line,
+  .border-line-strong {
+    border-color: CanvasText;
+  }
+}
+
+@layer utilities {
+  /* the faint grid the whole page sits on — one background, no extra DOM */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, var(--color-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-line) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  }
+
+  .mask-fade-r {
+    mask-image: linear-gradient(to right, black 80%, transparent 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

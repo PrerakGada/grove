@@ -1,2 +1,7 @@
 bin/
 dist/
+
+# local tooling output
+.playwright-mcp/
+/*.png
+/*.jpeg
