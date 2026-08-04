@@ -4,14 +4,26 @@ Parallel dev environments from git worktrees. Every worktree gets reserved
 ports, its own dependencies, its own database, and a background runner — so
 many branches run at once without a terminal each.
 
-The command is `wt`.
+```
+grove init          # detect this repo, write .wt.json, reserve port bands
+grove ports         # the allocation table
+grove ports -g      # every project registered on this machine
+grove doctor        # config + registry + machine checks
+```
+
+`wt` is the short alias for the same binary — Grove reads the name it was
+invoked by, so help and messages say whichever one you type.
+
+## Install
 
 ```
-wt init          # detect this repo, write .wt.json, reserve port bands
-wt ports         # the allocation table
-wt ports -g      # every project registered on this machine
-wt doctor        # config + registry + machine checks
+make install         # links `grove` into ~/.local/bin
+make install-alias   # also links `wt`
 ```
+
+`install-alias` is separate on purpose: a shell alias named `wt` shadows any
+binary of that name, so it only makes sense once Grove has replaced whatever
+that alias points at.
 
 ## Two files, one rule
 
@@ -55,8 +67,10 @@ macOS and Linux. Windows is stubbed — use WSL2, which is what a repository
 relying on symlinks needs there anyway. See `internal/platform` for what a
 native port would take; `ProcCwd` is the hard one.
 
-## Build
+## Develop
 
 ```
-go build -o bin/wt .
+make build   # bin/grove
+make vet
+make cross   # proves the platform stubs still compile for darwin/linux/windows
 ```

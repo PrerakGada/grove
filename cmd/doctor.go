@@ -54,8 +54,8 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 		proj := reg.Projects[cfg.Project]
 		switch {
 		case proj == nil:
-			ui.Warn("project %q is not registered in %s — run `wt init` to reserve its bands",
-				cfg.Project, registry.Home())
+			ui.Warn("project %q is not registered in %s — run `%s init` to reserve its bands",
+				cfg.Project, registry.Home(), Name())
 			problems++
 		case proj.Root != root:
 			ui.Warn("registry points project %q at %s, but this repository is %s",

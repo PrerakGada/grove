@@ -26,7 +26,7 @@ func (c *Config) Validate() error {
 		errs = append(errs, fmt.Sprintf("maxSlots %d out of range (1-999)", c.MaxSlots))
 	}
 	if len(c.Services) == 0 {
-		errs = append(errs, "no services defined — wt would have nothing to run")
+		errs = append(errs, "no services defined — there would be nothing to run")
 	}
 
 	seen := map[string]bool{}

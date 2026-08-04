@@ -198,7 +198,7 @@ func Load(root string) (*Config, error) {
 	b, err := os.ReadFile(p)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			return nil, fmt.Errorf("no %s in %s — run `wt init` here first", FileName, root)
+			return nil, fmt.Errorf("no %s in %s — run `grove init` here first", FileName, root)
 		}
 		return nil, err
 	}

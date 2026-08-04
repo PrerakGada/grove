@@ -106,7 +106,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 			return err
 		}
 		if !proceed {
-			return fmt.Errorf("aborted — adjust the bands and run `wt init` again")
+			return fmt.Errorf("aborted — adjust the bands and run `%s init` again", Name())
 		}
 	}
 
@@ -134,7 +134,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 	ui.Ok("wrote %s", filepath.Join(root, config.FileName))
 	ui.Ok("reserved bands %s in %s", bandList(cfg.Bands()), registry.Home())
 	fmt.Println()
-	ui.Info("Next: `wt create <name>` to provision a worktree, `wt ports` to see the table.")
+	ui.Info("Next: `%s create <name>` to provision a worktree, `%s ports` to see the table.", Name(), Name())
 	return nil
 }
 
@@ -194,7 +194,7 @@ func buildConfig(d *detect.Result, reg *registry.Registry) (*config.Config, erro
 	taken := map[int]bool{}
 	// A band the project already uses is kept even if it contains a well-known
 	// default port — moving working ports is worse than reporting the overlap,
-	// which `wt doctor` does. Bands chosen automatically avoid them outright.
+	// which `grove doctor` does. Bands chosen automatically avoid them outright.
 	keepable := func(b int) bool {
 		return !taken[b] && len(reg.ProjectConflicts(cfg.Project, []int{b}, cfg.MaxSlots)) == 0
 	}
@@ -365,7 +365,7 @@ func promptConfig(cfg *config.Config, d *detect.Result, reg *registry.Registry) 
 				Value(&cfg.WorktreeDir),
 			huh.NewInput().
 				Title("Branch prefix").
-				Description("`wt create foo` makes this branch. Leave empty for no prefix.").
+				Description("`"+Name()+" create foo` makes this branch. Leave empty for no prefix.").
 				Value(&cfg.BranchPrefix),
 			huh.NewInput().
 				Title("Max slots").
