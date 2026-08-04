@@ -8,10 +8,13 @@ const interTight = Inter_Tight({
   display: "swap",
 });
 
+/* Mono is only ever rendered at 400 on this page, so pinning the weight ships
+   one static instance instead of the full variable range. */
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin"],
   display: "swap",
+  weight: ["400"],
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL

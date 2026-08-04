@@ -52,7 +52,7 @@ export function Terminal({
 }) {
   return (
     <div
-      className={`overflow-hidden rounded-xl border border-line bg-surface shadow-2xl shadow-black/60 ${className}`}
+      className={`min-w-0 overflow-hidden rounded-xl border border-line bg-surface shadow-2xl shadow-black/60 ${className}`}
     >
       <div className="flex items-center gap-2 border-b border-line px-4 py-2.5">
         <span className="size-2.5 rounded-full bg-line-strong" />

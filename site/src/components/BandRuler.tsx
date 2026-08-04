@@ -38,8 +38,11 @@ const inBand = (band: number, value: number) =>
 
 export function BandRuler() {
   const ref = useRef<HTMLDivElement>(null);
-  /* Rendered full on the server: a crawler or a reader with JS off sees the
-     finished diagram, not an empty one. The animation resets it before paint. */
+  /* Rendered full on the server, then reset to 0 in a layout effect so the
+     animation can play. That deliberately costs one discarded client render.
+     The alternative — starting at 0 — would emit an empty diagram to crawlers
+     and to anyone without JS, which is a worse trade for a page whose argument
+     is the diagram. useLayoutEffect runs before paint, so nothing flashes. */
   const [shown, setShown] = useState<number>(TAKEN.length);
   const [active, setActive] = useState<number | null>(null);
   const [naive, setNaive] = useState(false);
@@ -73,7 +76,7 @@ export function BandRuler() {
   return (
     <div
       ref={ref}
-      className="rounded-xl border border-line bg-surface/60 p-5 sm:p-6"
+      className="min-w-0 rounded-xl border border-line bg-surface/60 p-5 sm:p-6"
     >
       <div className="mb-5 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
         <span className="font-mono text-xs tracking-[0.14em] text-fg-dim">
@@ -88,7 +91,7 @@ export function BandRuler() {
           <button
             onClick={() => setNaive(false)}
             aria-pressed={!naive}
-            className={`rounded-sm px-2.5 py-1 transition-colors ${
+            className={`rounded-sm px-3 py-2 transition-colors ${
               !naive ? "bg-ok/15 text-ok" : "text-fg-dim hover:text-fg-muted"
             }`}
           >
@@ -97,7 +100,7 @@ export function BandRuler() {
           <button
             onClick={() => setNaive(true)}
             aria-pressed={naive}
-            className={`rounded-sm px-2.5 py-1 transition-colors ${
+            className={`rounded-sm px-3 py-2 transition-colors ${
               naive ? "bg-err/15 text-err" : "text-fg-dim hover:text-fg-muted"
             }`}
           >
@@ -126,7 +129,7 @@ export function BandRuler() {
               key={`n${s}`}
               onMouseEnter={() => s < TAKEN.length && setActive(s)}
               onMouseLeave={() => setActive(null)}
-              className="truncate px-1 text-center text-[10px] transition-opacity duration-500"
+              className="truncate text-center text-[10px] transition-opacity duration-500"
               style={{
                 opacity: s < shown ? 1 : 0,
                 color:

@@ -1,10 +1,19 @@
 /*
   Everything on this page is real.
 
-  The terminal blocks below are literal stdout, captured by running the binary
-  from `go install github.com/PrerakGada/grove@latest` against a scratch pnpm
-  monorepo. Only two cosmetic edits were made: the temporary checkout path was
-  rewritten to ~/code/acme, and GROVE_HOME back to ~/.grove.
+  The blocks below are literal stdout. The binary came from
+  `go install github.com/PrerakGada/grove@latest`; it was run against a scratch
+  pnpm monorepo (two workspaces, Postgres in docker-compose) in a single
+  session, and nothing was reformatted, shortened or tidied — the pnpm install
+  noise and git's HEAD line are in `create` because they are in the real output.
+
+  Exactly two substitutions were made, both for readability:
+    the temporary checkout path  ->  ~/code/acme  (and its basename, "demo",
+    in the WORKTREE column -> "acme"), and GROVE_HOME -> ~/.grove.
+
+  `init` is from the top of that session, before the scratch repo's dev scripts
+  were swapped from `next dev -p 3100` to plain node servers so the ports would
+  really bind — which is why it still reports next and a -p flag.
 */
 
 export const REPO = "https://github.com/PrerakGada/grove";
@@ -31,74 +40,6 @@ export const stats = [
 /* ---------------------------------------------------------------- terminals */
 
 export const term = {
-  create: `$ grove create payments
-→ creating worktree "payments" on branch feat/payments (from main)
-Preparing worktree (new branch 'feat/payments')
-✓ env written (slot 1, fullstack mode)
-→ installing pnpm in . ...
-✓ dependencies installed — builds and code generation are safe here
-→ starting database for "payments" on port 5501 ...
-→ restoring the seed dump into acme_wt1 ...
-→ applying pending migrations ...
-✓ verified: 41 tables, ~128432 rows
-✓ "payments" is serving seed data — acme_wt1 on localhost:5501
-
-✓ "payments" is ready at ~/code/acme/worktrees/payments
-→ slot 1 — api:8201  web:3101  db:5501
-
-→ Start it: grove up payments`,
-
-  up: `$ grove up payments
-→ starting "payments" (fullstack) — [web]
-✓   api up on 8201
-✓   web up on 3101
-
-→ Detached — close this terminal freely.  Status: grove ps   Logs: grove logs <name> <service>`,
-
-  ports: `$ grove ports
-
-acme  ~/code/acme
-
-             band     api       web       db
-  main       0        8200      3100      5500
-  payments   1        8201      3101      5501
-  auth-v2    2        8202      3102      5502
-  refactor   3        8203      3103      5503
-
-→ 3 of 99 slots in use. Bands: 3100, 5500, 8200`,
-
-  list: `$ grove list
-
-acme  ~/code/acme
-
-  WORKTREE     BRANCH         SLOT  MODE       DIRTY  DEPS  RUNNING
-  acme (main)  main           0     -          3      -     db:5500
-  payments     feat/payments  1     fullstack  6      real  api:8201 web:3101
-  auth-v2      feat/auth-v2   2     fullstack  6      real  api:8202 web:3102
-  refactor     feat/refactor  3     fullstack  5      real  —`,
-
-  ps: `$ grove ps
-
-acme  ~/code/acme
-
-  WORKTREE  SERVICE  PORT  PID    STATE
-  auth-v2   api      8202  36056  up
-  auth-v2   web      3102  36217  up
-  payments  api      8201  35882  up
-  payments  web      3101  36020  up
-
-→ 4 service(s) running`,
-
-  doctor: `$ grove doctor
-
-✓ repository root: ~/code/acme
-✓ .grove.json is valid — 2 services, maxSlots 99
-✓ registered in ~/.grove — 3 slot(s) allocated
-✓ port bands 3100, 5500, 8200 are clear of other projects and well-known ports
-✓ pnpm store shares a volume with worktrees — installs stay copy-on-write
-
-✓ no problems found`,
-
   init: `$ grove init
 
 Detected
@@ -118,12 +59,94 @@ Detected
 
 → Next: \`grove create <name>\` to provision a worktree, \`grove ports\` to see the table.`,
 
+  create: `$ grove create payments
+→ creating worktree "payments" on branch feat/payments (from main)
+Preparing worktree (new branch 'feat/payments')
+HEAD is now at c787d86 real servers
+✓ env written (slot 1, fullstack mode)
+→ installing pnpm in . ...
+Scope: all 3 workspace projects
+Already up to date
+
+Done in 191ms using pnpm v11.9.0
+✓ dependencies installed — builds and code generation are safe here
+→ starting database for "payments" on port 5501 ...
+→ restoring the seed dump into acme_wt1 ...
+→ applying pending migrations ...
+✓ verified: 12 tables, ~4800 rows
+✓ "payments" is serving seed data — acme_wt1 on localhost:5501
+
+✓ "payments" is ready at ~/code/acme/worktrees/payments
+→ slot 1 — api:8201  web:3101  db:5501
+
+→ Start it: grove up payments`,
+
+  up: `$ grove up payments
+
+→ starting "payments" (fullstack) — [web]
+✓   db up on 5501
+✓   api up on 8201
+✓   web up on 3101
+
+→ Detached — close this terminal freely.  Status: grove ps   Logs: grove logs <name> <service>`,
+
+  ports: `$ grove ports
+
+acme  ~/code/acme
+
+             band     api       web       db       
+  main       0        8200      3100      5500     
+  payments   1        8201      3101      5501     
+  auth-v2    2        8202      3102      5502     
+  refactor   3        8203      3103      5503     
+
+→ 3 of 99 slots in use. Bands: 3100, 5500, 8200`,
+
+  list: `$ grove list
+
+acme  ~/code/acme
+
+  WORKTREE     BRANCH         SLOT  MODE       DIRTY  DEPS  RUNNING
+  acme (main)  main           0     -          6      -     db:5500
+  payments     feat/payments  1     fullstack  8      real  api:8201 web:3101 db:5501
+  auth-v2      feat/auth-v2   2     fullstack  6      real  api:8202 web:3102
+  refactor     feat/refactor  3     fullstack  6      real  —`,
+
+  ps: `$ grove ps
+
+acme  ~/code/acme
+
+  WORKTREE  SERVICE  PORT  PID    STATE
+  auth-v2   api      8202  50008  up
+  auth-v2   web      3102  50159  up
+  payments  api      8201  49049  up
+  payments  web      3101  49151  up
+
+→ 4 service(s) running`,
+
+  doctor: `$ grove doctor
+
+✓ repository root: ~/code/acme
+✓ .grove.json is valid — 2 services, maxSlots 99
+✓ registered in ~/.grove — 3 slot(s) allocated
+✓ port bands 3100, 5500, 8200 are clear of other projects and well-known ports
+✓ pnpm store shares a volume with worktrees — installs stay copy-on-write
+
+✓ no problems found`,
+
+  db: `$ grove db payments
+→ starting database for "payments" on port 5501 ...
+→ reusing the existing seed database
+→ applying pending migrations ...
+✓ verified: 12 tables, ~4800 rows
+✓ "payments" is serving seed data — acme_wt1 on localhost:5501`,
+
   down: `$ grove down auth-v2
 → stopping "auth-v2" ...
 ✓   "auth-v2" stopped`,
 
   guard: `$ grove delete payments
-✗ "payments" has 6 uncommitted change(s) — commit them, or re-run with --force`,
+✗ "payments" has 8 uncommitted change(s) — commit them, or re-run with --force`,
 } as const;
 
 /* ------------------------------------------------------------------ lifecycle */
@@ -172,7 +195,7 @@ export const pillars = [
   {
     k: "Ports",
     h: "Every port is band + slot",
-    b: "Each service owns a 100-wide band, each worktree owns one slot, the main checkout is slot 0. The trailing digits of any port are always the slot number.",
+    b: "Ninety-nine worktrees per project, and no two projects on one machine can claim the same band — reservations are global, not per repository.",
   },
   {
     k: "Isolation",
@@ -182,7 +205,7 @@ export const pillars = [
   {
     k: "Database",
     h: "Proven, not assumed",
-    b: "A restore is not finished until it is counted. Grove runs ANALYZE, checks tables and rows, and fails hard with the exact reseed command if it came back empty.",
+    b: "A restore is not finished until it is counted. Grove runs ANALYZE and checks tables and rows against the thresholds your config sets, then fails with the exact reseed command if it came back short.",
   },
   {
     k: "Runner",

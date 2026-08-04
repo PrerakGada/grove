@@ -1,32 +1,45 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Terminal, TerminalBody } from "./Terminal";
-import { lifecycle } from "@/lib/content";
 
 /*
+  Only the tab state is client-side. The panels arrive as already-rendered
+  server children, so the captured terminal output never enters the client
+  bundle — which is also why this component imports nothing from content.ts.
+
   A real ARIA tabs implementation, not just the role names: roving tabindex,
-  arrow/Home/End keys, and a labelled tabpanel. Declaring role="tablist"
-  without those is worse for a screen-reader user than plain buttons.
+  arrow/Home/End keys, and one labelled tabpanel per tab. Every panel is in the
+  markup and inactive ones are `hidden`, so a crawler or a reader without JS
+  gets all five captures rather than only the selected one.
 */
-export function Lifecycle() {
+
+export type LifecycleTab = { cmd: string; label: string };
+
+export function Lifecycle({
+  tabs,
+  panels,
+}: {
+  tabs: LifecycleTab[];
+  panels: React.ReactNode[];
+}) {
   const [i, setI] = useState(1);
-  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
-  const step = lifecycle[i];
+  const refs = useRef<(HTMLButtonElement | null)[]>([]);
 
   function onKeyDown(e: React.KeyboardEvent) {
-    const last = lifecycle.length - 1;
+    const last = tabs.length - 1;
     let next: number | null = null;
 
-    if (e.key === "ArrowRight" || e.key === "ArrowDown") next = i === last ? 0 : i + 1;
-    else if (e.key === "ArrowLeft" || e.key === "ArrowUp") next = i === 0 ? last : i - 1;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown")
+      next = i === last ? 0 : i + 1;
+    else if (e.key === "ArrowLeft" || e.key === "ArrowUp")
+      next = i === 0 ? last : i - 1;
     else if (e.key === "Home") next = 0;
     else if (e.key === "End") next = last;
 
     if (next === null) return;
     e.preventDefault();
     setI(next);
-    tabs.current[next]?.focus();
+    refs.current[next]?.focus();
   }
 
   return (
@@ -38,18 +51,18 @@ export function Lifecycle() {
         aria-orientation="vertical"
         onKeyDown={onKeyDown}
       >
-        {lifecycle.map((s, n) => {
+        {tabs.map((t, n) => {
           const on = n === i;
           return (
             <button
-              key={s.cmd}
+              key={t.cmd}
               ref={(el) => {
-                tabs.current[n] = el;
+                refs.current[n] = el;
               }}
               id={`lc-tab-${n}`}
               role="tab"
               aria-selected={on}
-              aria-controls="lc-panel"
+              aria-controls={`lc-panel-${n}`}
               tabIndex={on ? 0 : -1}
               onClick={() => setI(n)}
               className={`shrink-0 rounded-lg border px-3.5 py-2.5 text-left transition-colors lg:shrink ${
@@ -61,29 +74,30 @@ export function Lifecycle() {
               <span
                 className={`block font-mono text-[13px] ${on ? "text-ok" : "text-fg-muted"}`}
               >
-                {s.cmd}
+                {t.cmd}
               </span>
               <span className="mt-0.5 hidden text-xs text-fg-dim lg:block">
-                {s.label}
+                {t.label}
               </span>
             </button>
           );
         })}
       </div>
 
-      <div
-        id="lc-panel"
-        role="tabpanel"
-        aria-labelledby={`lc-tab-${i}`}
-        tabIndex={0}
-        className="min-w-0 focus-visible:outline-2"
-      >
-        <p className="mb-4 max-w-2xl text-[15px] leading-relaxed text-fg-muted">
-          {step.blurb}
-        </p>
-        <Terminal title={step.cmd}>
-          <TerminalBody text={step.term} />
-        </Terminal>
+      <div className="min-w-0">
+        {panels.map((p, n) => (
+          <div
+            key={n}
+            id={`lc-panel-${n}`}
+            role="tabpanel"
+            aria-labelledby={`lc-tab-${n}`}
+            hidden={n !== i}
+            tabIndex={0}
+            className="min-w-0 focus-visible:outline-2"
+          >
+            {p}
+          </div>
+        ))}
       </div>
     </div>
   );

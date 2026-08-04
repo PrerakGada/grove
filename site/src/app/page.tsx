@@ -12,6 +12,7 @@ import {
   configExample,
   failures,
   honest,
+  lifecycle,
   pillars,
   stats,
   term,
@@ -105,7 +106,7 @@ export default async function Home() {
               ))}
             </dl>
 
-            <div className="mt-16 grid gap-5 lg:grid-cols-[1.05fr_1fr] lg:items-start">
+            <div className="mt-16 grid gap-5 *:min-w-0 lg:grid-cols-[1.05fr_1fr] lg:items-start">
               <BandRuler />
               <Terminal title="grove ports">
                 <TerminalBody text={term.ports} />
@@ -144,11 +145,11 @@ export default async function Home() {
           title="One offset, applied to every band."
           lede="Each service owns a 100-wide band. A worktree owns one slot, and the main checkout is slot 0 — so a band is also its own port, and the trailing digits of any port are always the slot number. Ninety-nine worktrees fit before a band is full."
         >
-          <div className="grid gap-5 lg:grid-cols-2 lg:items-start">
+          <div className="space-y-5">
             <Terminal title="grove list">
               <TerminalBody text={term.list} />
             </Terminal>
-            <div className="space-y-5">
+            <div className="grid gap-5 *:min-w-0 sm:grid-cols-2">
               <div className="rounded-xl border border-line bg-surface/60 p-6">
                 <h3 className="font-mono text-sm text-fg">
                   Bands are reserved globally
@@ -156,9 +157,10 @@ export default async function Home() {
                 <p className="mt-3 text-[14px] leading-relaxed text-fg-muted">
                   Reservations live in{" "}
                   <code className="text-key">~/.grove</code>, not in the
-                  repository — so two projects on one machine can never both
-                  claim 3100, and every allocation is a flock-guarded
-                  read-modify-write with an atomic rename.
+                  repository — so a second project is given a different band
+                  rather than the one already taken, and Grove will not reserve
+                  a colliding band unless you confirm it. Every allocation is a
+                  flock-guarded read-modify-write with an atomic rename.
                 </p>
               </div>
               <div className="rounded-xl border border-line bg-surface/60 p-6">
@@ -167,9 +169,11 @@ export default async function Home() {
                 </h3>
                 <p className="mt-3 text-[14px] leading-relaxed text-fg-muted">
                   A band containing 3000, 5173 or 5432 only bites at the one
-                  slot whose offset lands there. Grove warns and names that slot
-                  rather than relocating a band your project already uses. A
-                  collision with another <em>project</em> is a hard error.
+                  slot whose offset lands there. Grove warns and names that
+                  slot rather than relocating a band your project already uses.
+                  A collision with another <em>project</em> is graver:{" "}
+                  <code className="text-fg">grove init -y</code> refuses
+                  outright, and interactively you have to confirm it.
                 </p>
               </div>
             </div>
@@ -183,7 +187,19 @@ export default async function Home() {
           title="Five commands, from empty repo to eight running branches."
           lede="Every block below is literal stdout, captured from the binary against a scratch pnpm monorepo."
         >
-          <Lifecycle />
+          <Lifecycle
+            tabs={lifecycle.map(({ cmd, label }) => ({ cmd, label }))}
+            panels={lifecycle.map((s) => (
+              <div key={s.cmd}>
+                <p className="mb-4 max-w-2xl text-[15px] leading-relaxed text-fg-muted">
+                  {s.blurb}
+                </p>
+                <Terminal title={s.cmd}>
+                  <TerminalBody text={s.term} />
+                </Terminal>
+              </div>
+            ))}
+          />
         </Section>
 
         {/* ---------------------------------------------------------- config */}
@@ -193,10 +209,10 @@ export default async function Home() {
           title="Two files, and one rule between them."
           lede="Nothing machine-specific may reach git, and nothing project-shaped may live only on your machine. A teammate clones the repo and grove works without editing anything."
         >
-          <div className="grid gap-5 lg:grid-cols-[1fr_1.15fr] lg:items-start">
-            <div className="space-y-5">
+          <div className="space-y-5">
+            <div className="grid gap-5 *:min-w-0 lg:grid-cols-3">
               <div className="rounded-xl border border-line bg-surface/60 p-6">
-                <div className="flex items-baseline justify-between gap-4">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
                   <code className="font-mono text-sm text-key">
                     .grove.json
                   </code>
@@ -213,8 +229,8 @@ export default async function Home() {
                 </p>
               </div>
               <div className="rounded-xl border border-line bg-surface/60 p-6">
-                <div className="flex items-baseline justify-between gap-4">
-                  <code className="font-mono text-sm text-key">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+                  <code className="min-w-0 font-mono text-sm break-all text-key">
                     ~/.grove/registry.json
                   </code>
                   <span className="rounded border border-line-strong px-2 py-0.5 font-mono text-[10px] tracking-wide text-fg-dim">
@@ -301,7 +317,7 @@ export default async function Home() {
             ))}
           </ol>
 
-          <div className="mt-5 grid gap-5 lg:grid-cols-2">
+          <div className="mt-5 space-y-5">
             <Terminal title="the guard that fires">
               <TerminalBody text={term.guard} />
             </Terminal>
@@ -317,26 +333,27 @@ export default async function Home() {
           title="Fifteen commands."
           lede="Nothing hidden behind a plugin system."
         >
-          <div className="overflow-x-auto rounded-xl border border-line">
-            <table className="w-full border-collapse text-left">
-              <tbody className="font-mono text-[13px]">
-                {commands.map(([c, d], i) => (
-                  <tr
-                    key={c}
-                    className={i % 2 ? "bg-surface/40" : "bg-transparent"}
-                  >
-                    <td className="w-px border-b border-line px-5 py-3 whitespace-nowrap text-fg">
-                      <span className="text-fg-dim">grove </span>
-                      {c}
-                    </td>
-                    <td className="border-b border-line px-5 py-3 text-fg-muted">
-                      {d}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {/* a definition list rather than a table: it stacks on a phone
+              instead of forcing a 392px scroller into a 278px viewport, and
+              the command itself still never wraps mid-token */}
+          <dl className="overflow-hidden rounded-xl border border-line">
+            {commands.map(([c, d], i) => (
+              <div
+                key={c}
+                className={`gap-x-5 px-5 py-3 sm:grid sm:grid-cols-[minmax(0,15rem)_1fr] ${
+                  i % 2 ? "bg-surface/40" : "bg-transparent"
+                } ${i ? "border-t border-line" : ""}`}
+              >
+                <dt className="font-mono text-[13px] whitespace-nowrap text-fg">
+                  <span className="text-fg-dim">grove </span>
+                  {c}
+                </dt>
+                <dd className="mt-1 font-mono text-[13px] text-fg-muted sm:mt-0">
+                  {d}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </Section>
 
         {/* ---------------------------------------------------------- honest */}
@@ -349,7 +366,9 @@ export default async function Home() {
             {honest.map((h) => (
               <div key={h.h} className="bg-bg p-7 sm:p-8">
                 <h3 className="flex items-baseline gap-2.5 text-[16px] font-medium">
-                  <span className="font-mono text-warn">!</span>
+                  <span className="font-mono text-warn" aria-hidden="true">
+                    !
+                  </span>
                   {h.h}
                 </h3>
                 <p className="mt-2.5 text-[14px] leading-relaxed text-fg-muted">
