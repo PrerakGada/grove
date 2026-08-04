@@ -41,9 +41,9 @@ digits of any port are always the slot.
 
 ```
           main (slot 0)   worktree n
-web  3100            3100 + n
-admin   3200            3200 + n
-backend   8200            8200 + n
+web       3100            3100 + n
+admin     3200            3200 + n
+api       8200            8200 + n
 db        5500            5500 + n
 ```
 

@@ -142,7 +142,7 @@ func startOne(cfg *config.Config, wtPath string, s config.Service, slot int) {
 }
 
 // splitNamesAndServices separates worktree names from service names, so
-// `grove up mywt web admin` reads naturally.
+// `grove up mywt web api` reads naturally.
 func splitNamesAndServices(cfg *config.Config, root string, args []string, all bool) ([]string, []string, error) {
 	var names, services []string
 	for _, a := range args {

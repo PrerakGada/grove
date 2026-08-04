@@ -120,7 +120,7 @@ func Run(root string) (*Result, error) {
 	r.detectPackageManager()
 	if pkg := readPackageJSON(filepath.Join(root, "package.json")); pkg != nil && pkg.Name != "" {
 		// Prefer the declared package name over the directory name: a folder
-		// called "monorepo" says nothing, "web" identifies the project.
+		// called "monorepo" says nothing, the declared name identifies the project.
 		if n := sanitise(strings.TrimPrefix(pkg.Name, "@")); n != "" {
 			r.Project = n
 		}

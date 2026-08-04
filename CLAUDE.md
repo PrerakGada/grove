@@ -6,11 +6,11 @@ background runner — so many branches run at once without a terminal each.
 
 Go module `github.com/PrerakGada/grove`. The binary is **`grove`**. ~6,000 lines.
 
-It is the rewrite of `~/web/monorepo/.claude/scripts/wt.sh` (1,850 lines of
-bash). **That script is the specification** — every non-obvious behaviour here
-exists because the bash version got it wrong first, in production, on a machine
-running 8 worktrees. Read the "Failures this encodes" section before changing
-anything that looks over-engineered.
+It is the rewrite of a 1,850-line bash predecessor. **That script is the
+specification** — every non-obvious behaviour here exists because the bash
+version got it wrong first, in daily use, on a machine running eight worktrees.
+Read the "Failures this encodes" section before changing anything that looks
+over-engineered.
 
 ---
 
@@ -120,8 +120,8 @@ running against a real repository, and re-breaking them is easy:
   Otherwise one keeps a familiar number while its siblings scatter.
 - **Resolve symlinks before treating a file as a service's own env file.** A
   monorepo commonly links every workspace's `.env` back to one root file. Treating
-  those as distinct had six the monorepo services read `PORT=8200` from the same file,
-  collide, and all move off their correct bands.
+  those as distinct had six services in one monorepo read the same `PORT` from that
+  one file, collide, and all move off their correct bands.
 - **Credentials come only from committed compose files**, resolving
   `${VAR:-default}` to its inline default. `.grove.json` is committed, so it must
   never absorb a secret the repo keeps out of git.
@@ -153,15 +153,14 @@ running against a real repository, and re-breaking them is easy:
 **All 15 commands built:** init, create, track, setup, delete, db, up, down, ps,
 logs, dev, list, ports, doctor, prune.
 
-**Adopted, both registered in `~/.grove`:**
+**Adopted on two real projects**, both registered in `~/.grove`: a pnpm/Turbo
+monorepo (six services + Postgres, where detection reproduced a hand-written port
+scheme exactly), and a polyglot repository (Flutter app + NestJS API + a pnpm
+codegen package, tied together by `just`) — which is what forced `deps.steps`,
+`env.files` and sub-project database discovery to exist.
 
-| project | bands | notes |
-| --- | --- | --- |
-| `example-monorepo` | 3100–3500, 5500, 8200 | detection reproduced the hand-written scheme exactly |
-| `polyglot-repo` | 3600–3900 | polyglot: Flutter + NestJS + pnpm, `just` as the command layer |
-
-**Verified end-to-end in a scratch repo**, not against the monorepo (a real `create`
-there costs ~500 MB of dependencies plus a database restore). create installs and
+**Verified end-to-end in a scratch repo** rather than against either of those, since
+a real `create` there costs ~500 MB of dependencies plus a database restore. create installs and
 allocates; up binds and reparents to PID 1; ps/logs/dev work; the delete guards
 fire; forced delete frees slot and branch; prune reclaims an orphan. The
 three-pass kill was proven explicitly: a hand-started server on a port the slot
@@ -186,11 +185,11 @@ survived.
   `worktrees/.slots` and marks those rows `*`, but nothing imports them into the
   registry. Existing worktrees need `grove setup <name>` to be fully managed.
 
-### Related context outside this repo
+### Migrating off the bash predecessor
 
-- `~/web/monorepo/.claude/scripts/wt.sh` — the bash predecessor, still aliased
-  to `wt` in `~/.zshrc` and still what those worktrees were created with.
-- `~/Developer/a polyglot repo/scripts/wt.sh` — a second hand-port, now marked
-  superseded and stride-aligned, but it still keeps its own `worktrees/.slots`
-  separate from the registry. Two allocators against one project is the exact
-  collision Grove exists to prevent; deleting it is the clean end state.
+Two hand-written bash versions of this tool are still in circulation, each with
+its own `worktrees/.slots` file. Those are independent allocators: running one
+alongside Grove hands the same slot different ports, which is the exact collision
+Grove exists to prevent. `grove list` reads a legacy `.slots` and marks those rows
+`*` so the state is visible, but nothing imports them — an existing worktree needs
+`grove setup <name>` to become managed, and the old script should then be deleted.
