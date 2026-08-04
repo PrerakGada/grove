@@ -96,10 +96,6 @@ func printGlobalPorts() error {
 	if err != nil {
 		return err
 	}
-	if len(reg.Projects) == 0 {
-		ui.Info("No projects registered yet. Run `grove init` in a repository.")
-		return nil
-	}
 
 	names := make([]string, 0, len(reg.Projects))
 	for n := range reg.Projects {
@@ -107,19 +103,23 @@ func printGlobalPorts() error {
 	}
 	sort.Strings(names)
 
+	// The header prints whether or not anything is registered, the way `docker
+	// ps` does — an empty table is a state, not an error, and it says more
+	// about the shape of the data than a sentence does.
 	fmt.Println()
 	fmt.Println(ui.Title.Render("Registered projects") + "  " + ui.Dim.Render(registry.Home()))
 	fmt.Println()
-	fmt.Printf(ui.Dim.Render("  %-16s %-6s %-8s %s")+"\n", "project", "slots", "max", "bands")
+	fmt.Printf(ui.Dim.Render("  %-18s %-6s %-6s %-28s %s")+"\n",
+		"PROJECT", "SLOTS", "MAX", "BANDS", "ROOT")
 	for _, n := range names {
 		p := reg.Projects[n]
-		fmt.Printf("  %-16s %-6d %-8d %s\n", n, len(p.Slots), p.MaxSlots, bandList(p.Bands))
+		fmt.Printf("  %-18s %-6d %-6d %-28s %s\n",
+			n, len(p.Slots), p.MaxSlots, truncate(bandSummary(p.Bands), 27), ui.Dim.Render(p.Root))
 	}
 	fmt.Println()
-	for _, n := range names {
-		fmt.Printf("  %s %s\n", ui.Key.Render(n), ui.Dim.Render(reg.Projects[n].Root))
+	if len(names) == 0 {
+		ui.Info("Nothing registered yet. Run `grove init` inside a repository to add one.")
 	}
-	fmt.Println()
 	return nil
 }
 

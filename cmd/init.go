@@ -497,10 +497,40 @@ func orDefault(v, def string) string {
 }
 
 func bandList(bands []int) string {
-	sort.Ints(bands)
-	parts := make([]string, len(bands))
-	for i, b := range bands {
+	sorted := append([]int(nil), bands...)
+	sort.Ints(sorted)
+	parts := make([]string, len(sorted))
+	for i, b := range sorted {
 		parts[i] = strconv.Itoa(b)
 	}
 	return strings.Join(parts, ", ")
+}
+
+// bandSummary collapses runs of adjacent bands into ranges, so a project with
+// five neighbouring services reads as "3100-3500" instead of listing each.
+func bandSummary(bands []int) string {
+	sorted := append([]int(nil), bands...)
+	sort.Ints(sorted)
+
+	var parts []string
+	for i := 0; i < len(sorted); {
+		j := i
+		for j+1 < len(sorted) && sorted[j+1] == sorted[j]+registry.BandStep {
+			j++
+		}
+		if j > i {
+			parts = append(parts, fmt.Sprintf("%d-%d", sorted[i], sorted[j]))
+		} else {
+			parts = append(parts, strconv.Itoa(sorted[i]))
+		}
+		i = j + 1
+	}
+	return strings.Join(parts, ", ")
+}
+
+func truncate(s string, max int) string {
+	if len(s) <= max {
+		return s
+	}
+	return s[:max-1] + "…"
 }
