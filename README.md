@@ -46,13 +46,30 @@ Bands are reserved **globally** in `~/.grove`, so a second project cannot claim 
 range that is already spoken for — and neither can it land on 3000, 5173, 5432
 or any other well-known default.
 
-## Status
+## Commands
 
-Working: `init` (detection + wizard), `ports`, `doctor`.
+```
+grove init                    detect this repo, write .grove.json, reserve bands
+grove create <name> [base]    new branch + worktree, provisioned and seeded
+grove track <branch> [name]   check out an existing branch (local or remote)
+grove setup <name>            re-provision: repair ports/links, convert mode or deps
+grove delete <name>           remove worktree, database, slot and branch
+grove db <name> [profile]     provision its database, verified non-empty
+grove up <name> [service...]  start detached
+grove down <name>             stop (pids, ports, and working directory)
+grove ps                      what is running
+grove logs <name> <service>   captured output
+grove dev [service...]        run in the foreground, on this worktree's ports
+grove list                    worktrees, slots, modes, what is listening
+grove ports [-g]              port table; -g for every project on this machine
+grove doctor                  config, registry and machine checks
+grove prune                   drop stale worktrees and free their slots
+```
 
-Not built yet: `create`, `track`, `delete`, `setup`, `up`, `down`, `ps`,
-`logs`, `db`, `dev`. The reference implementation for all of those is the bash
-predecessor at `web/monorepo/.claude/scripts/wt.sh`.
+`create` defaults to a fully isolated worktree: own dependencies, own backend
+port, own database seeded and **verified non-empty before the command returns**.
+`--frontend` shares the main checkout's backend and database instead;
+`--shared-deps` symlinks dependencies where the project allows it.
 
 ## Platforms
 
