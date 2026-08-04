@@ -76,9 +76,11 @@ type PortBinding struct {
 }
 
 type Deps struct {
-	Manager string `json:"manager"`
-	Install string `json:"install"`
-	// Workspaces are subdirectories that carry their own node_modules.
+	// Steps run in order to materialise a new worktree's dependencies. A
+	// single-toolchain repository has one; a polyglot one has several, because
+	// a Flutter app and a Node server cannot be installed by the same command.
+	Steps []DepStep `json:"steps,omitempty"`
+	// Workspaces are subdirectories that carry their own dependency directory.
 	Workspaces []string `json:"workspaces,omitempty"`
 	// Shareable allows the `light` escape hatch, which symlinks the main
 	// checkout's dependencies instead of installing. Set false for projects
@@ -89,8 +91,36 @@ type Deps struct {
 	Seed []string `json:"seed,omitempty"`
 }
 
+type DepStep struct {
+	// Dir is relative to the worktree root; "." is the root itself.
+	Dir     string `json:"dir"`
+	Manager string `json:"manager"`
+	Install string `json:"install"`
+}
+
+// Managers lists the distinct package managers this project installs with.
+func (d *Deps) Managers() []string {
+	seen := map[string]bool{}
+	var out []string
+	for _, s := range d.Steps {
+		if s.Manager != "" && !seen[s.Manager] {
+			seen[s.Manager] = true
+			out = append(out, s.Manager)
+		}
+	}
+	return out
+}
+
+// Env lists every environment file a worktree needs rewritten. A repository
+// with one root .env has a single entry; a polyglot one has the file that
+// belongs to each sub-project, since there is no shared root to write to.
 type Env struct {
-	File string `json:"file"`
+	Files []EnvFile `json:"files"`
+}
+
+type EnvFile struct {
+	// Path is relative to the worktree root.
+	Path string `json:"path"`
 	// Inherit is "copy" (own file, seeded from the main checkout), "link"
 	// (symlink to the main checkout's), or "none".
 	Inherit string `json:"inherit"`
@@ -103,6 +133,22 @@ type Env struct {
 	// ports changed, every worktree silently kept pointing at the main backend.
 	Set       map[string]string `json:"set,omitempty"`
 	Fullstack map[string]string `json:"fullstack,omitempty"`
+}
+
+// File returns the entry for a path, creating it if absent.
+func (e *Env) File(path string) *EnvFile {
+	for i := range e.Files {
+		if e.Files[i].Path == path {
+			return &e.Files[i]
+		}
+	}
+	e.Files = append(e.Files, EnvFile{
+		Path:      path,
+		Inherit:   "copy",
+		Set:       map[string]string{},
+		Fullstack: map[string]string{},
+	})
+	return &e.Files[len(e.Files)-1]
 }
 
 type DB struct {
@@ -250,8 +296,12 @@ func (c *Config) applyDefaults() {
 	if c.MaxSlots == 0 {
 		c.MaxSlots = 99
 	}
-	if c.Env != nil && c.Env.Inherit == "" {
-		c.Env.Inherit = "copy"
+	if c.Env != nil {
+		for i := range c.Env.Files {
+			if c.Env.Files[i].Inherit == "" {
+				c.Env.Files[i].Inherit = "copy"
+			}
+		}
 	}
 	if c.DB != nil {
 		if c.DB.Verify.MinTables == 0 {

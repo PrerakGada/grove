@@ -65,33 +65,48 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 			ui.Ok("registered in %s — %d slot(s) allocated", registry.Home(), len(proj.Slots))
 		}
 
-		conflicts := reg.Conflicts(cfg.Project, cfg.Bands(), cfg.MaxSlots)
-		if len(conflicts) > 0 {
-			for _, c := range conflicts {
-				ui.Err("%s", c)
-			}
-			problems += len(conflicts)
-		} else {
+		// Only a collision with another project is a failure. A band that
+		// merely contains a well-known default port bites at one slot and is
+		// reported, not counted — same judgement `grove init` makes.
+		hard := reg.ProjectConflicts(cfg.Project, cfg.Bands(), cfg.MaxSlots)
+		soft := reg.ReservedConflicts(cfg.Bands(), cfg.MaxSlots)
+		for _, c := range hard {
+			ui.Err("%s", c)
+		}
+		problems += len(hard)
+		for _, c := range soft {
+			ui.Warn("%s", c)
+		}
+		if len(hard) == 0 && len(soft) == 0 {
 			ui.Ok("port bands %s are clear of other projects and well-known ports", bandList(cfg.Bands()))
+		} else if len(hard) == 0 {
+			ui.Ok("port bands %s do not collide with any other project", bandList(cfg.Bands()))
 		}
 	}
 
 	// Cheap per-worktree dependencies rely on copy-on-write cloning, which only
 	// works within one filesystem. Across volumes the same install silently
 	// becomes real copies — gigabytes per worktree instead of megabytes.
-	if cfg.Deps != nil && cfg.Deps.Manager != "" {
+	if cfg.Deps != nil {
 		wtDir := filepath.Join(root, cfg.WorktreeDir)
-		if store, err := storePath(cfg.Deps.Manager); err != nil || store == "" {
-			ui.Warn("could not locate the %s store — skipping the copy-on-write check", cfg.Deps.Manager)
-		} else if same, err := platform.SameVolume(store, wtDir); err != nil {
-			ui.Warn("copy-on-write check failed: %v", err)
-		} else if !same {
-			ui.Err("the %s store (%s) is on a different volume from %s", cfg.Deps.Manager, store, wtDir)
-			fmt.Println("    Installs cannot clone or hardlink across volumes, so every worktree")
-			fmt.Println("    would pay full size. Move the store onto this volume.")
-			problems++
-		} else {
-			ui.Ok("%s store shares a volume with %s — installs stay copy-on-write", cfg.Deps.Manager, cfg.WorktreeDir)
+		for _, mgr := range cfg.Deps.Managers() {
+			store, err := storePath(mgr)
+			if err != nil || store == "" {
+				ui.Warn("could not locate the %s store — skipping its copy-on-write check", mgr)
+				continue
+			}
+			same, err := platform.SameVolume(store, wtDir)
+			switch {
+			case err != nil:
+				ui.Warn("copy-on-write check for %s failed: %v", mgr, err)
+			case !same:
+				ui.Err("the %s store (%s) is on a different volume from %s", mgr, store, wtDir)
+				fmt.Println("    Installs cannot clone or hardlink across volumes, so every worktree")
+				fmt.Println("    would pay full size. Move the store onto this volume.")
+				problems++
+			default:
+				ui.Ok("%s store shares a volume with %s — installs stay copy-on-write", mgr, cfg.WorktreeDir)
+			}
 		}
 	}
 

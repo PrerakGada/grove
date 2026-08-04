@@ -149,9 +149,34 @@ func printDetection(d *detect.Result) {
 		fmt.Printf("  %-14s %s\n", ui.Key.Render(k), v)
 	}
 	row("root", d.Root)
-	row("package manager", d.PackageMgr)
-	row("workspaces", strconv.Itoa(len(d.Workspaces)))
-	row("env file", d.EnvFile)
+	if d.Polyglot {
+		row("layout", "polyglot — scanned sub-projects, no root workspace")
+		mgrs := map[string]bool{}
+		var list []string
+		for _, s := range d.DepSteps {
+			if s.Manager != "" && !mgrs[s.Manager] {
+				mgrs[s.Manager] = true
+				list = append(list, s.Manager)
+			}
+		}
+		row("toolchains", strings.Join(list, ", "))
+	} else {
+		row("package manager", d.PackageMgr)
+		row("workspaces", strconv.Itoa(len(d.Workspaces)))
+	}
+	if d.TaskRunner != "" {
+		row("task runner", fmt.Sprintf("%s (%d recipes)", d.TaskRunner, len(d.Recipes)))
+	}
+	envs := []string{}
+	if d.EnvFile != "" {
+		envs = append(envs, d.EnvFile)
+	}
+	for _, s := range d.Services {
+		if p, ok := d.ServiceEnv[s.Name]; ok && p != "" {
+			envs = append(envs, p)
+		}
+	}
+	row("env files", strings.Join(envs, ", "))
 	if d.HasPrisma {
 		row("prisma", d.PrismaDir)
 	}
@@ -214,12 +239,30 @@ func buildConfig(d *detect.Result, reg *registry.Registry) (*config.Config, erro
 		wants = append(wants, want{"\x00db", d.DB.HostPort})
 	}
 
+	// Several services can only keep their current ports if those ports sit in
+	// different 100-blocks. A project that packs its services into adjacent
+	// ports (api 25444, web 25445, db 25446) has them all floor to one band, so
+	// none keeps it and all get fresh ones — otherwise a single arbitrary
+	// service would keep a familiar number while its siblings were scattered.
+	prefCount := map[int]int{}
+	for _, w := range wants {
+		if w.pref > 0 {
+			prefCount[(w.pref/registry.BandStep)*registry.BandStep]++
+		}
+	}
+	for b, n := range prefCount {
+		if n > 1 {
+			ui.Warn("%d services currently share the %d-%d range, which is one band — "+
+				"assigning all of them new bands", n, b, b+registry.BandStep-1)
+		}
+	}
+
 	for _, w := range wants {
 		if w.pref <= 0 {
 			continue
 		}
 		b := (w.pref / registry.BandStep) * registry.BandStep
-		if b >= 1024 && keepable(b) {
+		if b >= 1024 && prefCount[b] == 1 && keepable(b) {
 			taken[b] = true
 			bands[w.key] = b
 		}
@@ -251,49 +294,84 @@ func buildConfig(d *detect.Result, reg *registry.Registry) (*config.Config, erro
 		})
 	}
 
-	if d.PackageMgr != "" {
+	if len(d.DepSteps) > 0 {
+		steps := make([]config.DepStep, 0, len(d.DepSteps))
+		for _, s := range d.DepSteps {
+			steps = append(steps, config.DepStep(s))
+		}
 		cfg.Deps = &config.Deps{
-			Manager:    d.PackageMgr,
-			Install:    d.InstallCmd,
+			Steps:      steps,
 			Workspaces: d.Workspaces,
-			Shareable:  true,
+			// Sharing one dependency tree cannot represent several toolchains,
+			// so a polyglot repository never gets the light escape hatch.
+			Shareable: !d.Polyglot,
 		}
 		if d.HasPrisma {
 			// A generated Prisma client is expensive to rebuild and cheap to
-			// clone, so seed it copy-on-write into each new worktree.
-			cfg.Deps.Seed = []string{"node_modules/.prisma/client"}
+			// clone, so seed it copy-on-write into each new worktree. It lands
+			// beside whichever package.json pulled Prisma in.
+			cfg.Deps.Seed = []string{
+				filepath.Join(d.PrismaOwner, "node_modules/.prisma/client"),
+			}
 			// Sharing dependencies would put every worktree's generated client
 			// at the same path, so one `prisma generate` rewrites it for all.
 			cfg.Deps.Shareable = false
 		}
 	}
 
-	if d.EnvFile != "" {
-		cfg.Env = &config.Env{
-			File:      d.EnvFile,
-			Inherit:   "copy",
-			Set:       map[string]string{},
-			Fullstack: map[string]string{},
+	cfg.Env = &config.Env{}
+
+	for _, s := range cfg.Services {
+		if s.Port.Via != "env" {
+			continue
 		}
-		for _, s := range cfg.Services {
-			// A shared env file can hold only one value per key, so a port key
-			// used by more than one service (the generic PORT is the usual
-			// case) cannot live here. The runner injects those per process at
-			// launch instead — which is the only correct place for them.
-			if s.Port.Via == "env" && s.Kind != "backend" && d.KeyIsUnique(s.Port.Key) {
-				cfg.Env.Set[s.Port.Key] = "{{port." + s.Name + "}}"
+		// A service with its own env file always gets its port written there.
+		// Otherwise the key goes in the shared root file only if exactly one
+		// service reads it — a shared file holds one value per key, so the
+		// generic PORT cannot serve three frontends. The runner injects those
+		// per process at launch, which is the only correct place for them.
+		if own, ok := d.ServiceEnv[s.Name]; ok {
+			f := cfg.Env.File(own)
+			if s.Kind == "backend" {
+				f.Fullstack[s.Port.Key] = "{{port." + s.Name + "}}"
+			} else {
+				f.Set[s.Port.Key] = "{{port." + s.Name + "}}"
 			}
+			continue
 		}
-		if be := firstBackend(cfg); be != "" {
+		if d.EnvFile == "" {
+			continue
+		}
+		if s.Kind != "backend" && d.KeyIsUnique(s.Port.Key) {
+			cfg.Env.File(d.EnvFile).Set[s.Port.Key] = "{{port." + s.Name + "}}"
+		}
+	}
+
+	if be := firstBackend(cfg); be != "" {
+		// Where the backend's own settings live — its env file if it has one,
+		// else the shared root file.
+		target := d.ServiceEnv[be]
+		if target == "" {
+			target = d.EnvFile
+		}
+		if target != "" {
+			f := cfg.Env.File(target)
 			for _, s := range cfg.Services {
 				if s.Name == be && s.Port.Via == "env" {
-					cfg.Env.Fullstack[s.Port.Key] = "{{port." + be + "}}"
+					f.Fullstack[s.Port.Key] = "{{port." + be + "}}"
 				}
 			}
-			for _, k := range d.EnvKeysMatching("API_URL", "BACKEND_URL") {
-				cfg.Env.Fullstack[k] = "http://localhost:{{port." + be + "}}/"
+		}
+		// URLs pointing at the backend live wherever they are declared today.
+		for _, k := range d.EnvKeysMatching("API_URL", "BACKEND_URL") {
+			if d.EnvFile != "" {
+				cfg.Env.File(d.EnvFile).Fullstack[k] = "http://localhost:{{port." + be + "}}/"
 			}
 		}
+	}
+
+	if len(cfg.Env.Files) == 0 {
+		cfg.Env = nil
 	}
 
 	if d.DB != nil {
@@ -324,11 +402,24 @@ func buildConfig(d *detect.Result, reg *registry.Registry) (*config.Config, erro
 		if !d.HasPrisma {
 			cfg.DB.DumpDir = "db/dumps"
 		} else {
+			// Migrations run from the directory that owns the schema. When the
+			// root owns it, that is the backend reaching it through the
+			// workspace symlink; when a sub-project owns it, it is that
+			// sub-project, and the schema path is relative to it.
+			cfg.DB.MigrateDir = d.PrismaOwner
+			if cfg.DB.MigrateDir == "" {
+				cfg.DB.MigrateDir = backendDir(d)
+			}
 			cfg.DB.Migrate = "npx prisma migrate deploy --schema=" + d.PrismaDir
-			cfg.DB.MigrateDir = backendDir(d)
+			cfg.DB.DumpDir = filepath.Join(d.PrismaOwner, "prisma", "dumps")
 		}
-		if cfg.Env != nil {
-			cfg.Env.Fullstack["DATABASE_URL"] = fmt.Sprintf(
+		// DATABASE_URL belongs in whichever env file the backend actually
+		// reads, which in a polyglot repository is the backend's own.
+		if target := dbEnvTarget(d, cfg); target != "" {
+			if cfg.Env == nil {
+				cfg.Env = &config.Env{}
+			}
+			cfg.Env.File(target).Fullstack["DATABASE_URL"] = fmt.Sprintf(
 				"postgresql://%s:%s@localhost:{{port.db}}/{{db.name}}",
 				cfg.DB.User, cfg.DB.Password)
 		}
@@ -414,25 +505,47 @@ func promptConfig(cfg *config.Config, d *detect.Result, reg *registry.Registry) 
 
 	if !wantDB {
 		cfg.DB = nil
-		if cfg.Env != nil {
-			delete(cfg.Env.Fullstack, "DATABASE_URL")
-		}
 	}
 
-	// Bands and env rules reference service names; drop anything now orphaned.
+	// Env rules reference service names and the database; drop anything the
+	// answers above just orphaned, then drop any file left with no rules.
 	if cfg.Env != nil {
-		for k, v := range cfg.Env.Set {
-			if refsMissingService(v, cfg) {
-				delete(cfg.Env.Set, k)
+		for i := range cfg.Env.Files {
+			f := &cfg.Env.Files[i]
+			for k, v := range f.Set {
+				if refsMissingService(v, cfg) {
+					delete(f.Set, k)
+				}
+			}
+			for k, v := range f.Fullstack {
+				if refsMissingService(v, cfg) {
+					delete(f.Fullstack, k)
+				}
 			}
 		}
-		for k, v := range cfg.Env.Fullstack {
-			if refsMissingService(v, cfg) {
-				delete(cfg.Env.Fullstack, k)
+		var live []config.EnvFile
+		for _, f := range cfg.Env.Files {
+			if len(f.Set) > 0 || len(f.Fullstack) > 0 {
+				live = append(live, f)
 			}
+		}
+		cfg.Env.Files = live
+		if len(live) == 0 {
+			cfg.Env = nil
 		}
 	}
 	return nil
+}
+
+// dbEnvTarget picks the env file DATABASE_URL should be written to: the
+// backend's own if it has one, else the shared root file.
+func dbEnvTarget(d *detect.Result, cfg *config.Config) string {
+	if be := firstBackend(cfg); be != "" {
+		if own, ok := d.ServiceEnv[be]; ok && own != "" {
+			return own
+		}
+	}
+	return d.EnvFile
 }
 
 func dbDescription(d *detect.Result) string {

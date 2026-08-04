@@ -73,8 +73,15 @@ func (c *Config) Validate() error {
 		errs = append(errs, err.Error())
 	}
 
-	if c.Deps != nil && c.Deps.Manager == "" && c.Deps.Install != "" {
-		errs = append(errs, "deps.install is set but deps.manager is empty")
+	if c.Deps != nil {
+		for i, s := range c.Deps.Steps {
+			if s.Install == "" {
+				errs = append(errs, fmt.Sprintf("deps.steps[%d]: install is required", i))
+			}
+			if s.Dir == "" {
+				errs = append(errs, fmt.Sprintf("deps.steps[%d]: dir is required (use \".\" for the root)", i))
+			}
+		}
 	}
 
 	if len(errs) > 0 {

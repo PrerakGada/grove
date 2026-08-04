@@ -18,30 +18,52 @@ import (
 )
 
 type Result struct {
-	Root        string
-	Project     string
-	PackageMgr  string
-	InstallCmd  string
-	Workspaces  []string
-	Services    []Service
-	DB          *DB
-	EnvFile     string
-	EnvKeys     []string
-	EnvValues   map[string]string
+	Root       string
+	Project    string
+	PackageMgr string
+	InstallCmd string
+	Workspaces []string
+	Services   []Service
+	DB         *DB
+	EnvFile    string
+	EnvKeys    []string
+	EnvValues  map[string]string
+	// ServiceEnv maps a service name to its own env file, when it has one
+	// instead of sharing a root file.
+	ServiceEnv map[string]string
+	// DepSteps are per-sub-project install commands, used when the repository
+	// has no single root package manager.
+	DepSteps []DepStep
+	// TaskRunner and Recipes describe a `just`-style command layer, if present.
+	TaskRunner string
+	Recipes    []Recipe
+	// Polyglot is true when services were found by scanning sub-projects
+	// rather than by reading a workspace manifest.
+	Polyglot    bool
 	HasPrisma   bool
+	PrismaOwner string
 	PrismaDir   string
 	WorktreeDir string
+}
+
+// DepStep is one directory that installs its own dependencies.
+type DepStep struct {
+	Dir     string
+	Manager string
+	Install string
 }
 
 type Service struct {
 	Name string
 	Dir  string
 	Kind string // frontend | backend
-	// Framework is informational: next, vite, nest, express, unknown.
+	// Framework is informational: next, vite, nest, express, flutter, unknown.
 	Framework string
 	Cmd       string
 	PortVia   string // env | flag
 	PortKey   string
+	// RunScript is the wrapper script a project uses to start itself, if any.
+	RunScript string
 	// CurrentPort is the port the project uses today, if one could be found.
 	// It seeds the suggested band so existing habits survive the migration.
 	CurrentPort int
@@ -105,6 +127,18 @@ func Run(root string) (*Result, error) {
 	}
 	r.detectWorkspaces()
 	r.detectServices()
+	r.detectJustfile()
+
+	// Fall back to scanning sub-projects only when the workspace path found
+	// nothing runnable — a polyglot repository has no root manifest to read.
+	if len(r.Services) == 0 {
+		r.Polyglot = true
+		r.detectSubProjects()
+		r.applyRecipes()
+	} else if r.PackageMgr != "" {
+		r.DepSteps = []DepStep{{Dir: ".", Manager: r.PackageMgr, Install: r.InstallCmd}}
+	}
+
 	r.detectPrisma()
 	r.detectDB()
 	r.detectEnv()
@@ -254,11 +288,27 @@ func (r *Result) detectPortBinding(s *Service, dir, dev string) {
 }
 
 func (r *Result) detectPrisma() {
-	for _, p := range []string{"prisma/schema", "prisma/schema.prisma", "prisma"} {
+	names := []string{"prisma/schema", "prisma/schema.prisma", "prisma"}
+	for _, p := range names {
 		if exists(r.Root, p) {
 			r.HasPrisma = true
 			r.PrismaDir = p
 			return
+		}
+	}
+	// A polyglot repository keeps Prisma inside whichever sub-project owns
+	// persistence, so record the owner too — migrations must run from there.
+	for _, step := range r.DepSteps {
+		if step.Dir == "." {
+			continue
+		}
+		for _, p := range names {
+			if exists(r.Root, filepath.Join(step.Dir, p)) {
+				r.HasPrisma = true
+				r.PrismaOwner = step.Dir
+				r.PrismaDir = p
+				return
+			}
 		}
 	}
 }
@@ -277,6 +327,17 @@ func (r *Result) detectDB() {
 		"docker-compose.yml", "docker-compose.yaml",
 		"prisma/docker-compose.yml", "compose.yml", "compose.yaml",
 	}
+	// In a polyglot repository the database belongs to whichever sub-project
+	// owns persistence, not to the root, so search those too.
+	for _, step := range r.DepSteps {
+		if step.Dir == "." {
+			continue
+		}
+		for _, n := range []string{"docker-compose.yml", "docker-compose.yaml", "compose.yml"} {
+			candidates = append(candidates, filepath.Join(step.Dir, n))
+		}
+	}
+
 	for _, rel := range candidates {
 		b, err := os.ReadFile(filepath.Join(r.Root, rel))
 		if err != nil {
@@ -290,18 +351,34 @@ func (r *Result) detectDB() {
 			if !strings.Contains(svc.Image, "postgres") {
 				continue
 			}
+			// Values are read only from the compose file, which is committed,
+			// and shell substitutions resolve to their inline default. The
+			// project's .env is deliberately not consulted for credentials:
+			// .grove.json is meant to be committed, so it must never pick up a
+			// real secret that the repository keeps out of git.
 			db := &DB{
 				Driver:    "docker-postgres",
 				Image:     svc.Image,
 				Compose:   rel,
 				Container: svc.ContainerName,
-				User:      svc.Environment["POSTGRES_USER"],
-				Password:  svc.Environment["POSTGRES_PASSWORD"],
-				Name:      svc.Environment["POSTGRES_DB"],
+				User:      shellDefault(svc.Environment["POSTGRES_USER"]),
+				Password:  shellDefault(svc.Environment["POSTGRES_PASSWORD"]),
+				Name:      shellDefault(svc.Environment["POSTGRES_DB"]),
 			}
 			for _, p := range svc.Ports {
-				if host, _, ok := strings.Cut(p, ":"); ok {
-					db.HostPort = atoi(strings.Trim(host, `"`))
+				db.HostPort = hostPort(p)
+			}
+			// POSTGRES_DB is often just the bootstrap database. When it is,
+			// prefer another *_DB_NAME the compose file declares.
+			if db.Name == "" || db.Name == "postgres" {
+				for k, v := range svc.Environment {
+					if k == "POSTGRES_DB" || !strings.HasSuffix(k, "DB_NAME") {
+						continue
+					}
+					if n := shellDefault(v); n != "" && n != "postgres" {
+						db.Name = n
+						break
+					}
 				}
 			}
 			db.Profiles = r.detectDBProfiles()
@@ -321,7 +398,15 @@ var skipScript = regexp.MustCompile(`stop|clean|reset|use|reuse|test|unchanged|n
 // preferred over `db:setup:prod:safe`.
 func (r *Result) detectDBProfiles() map[string]string {
 	out := map[string]string{}
-	for _, ws := range r.Workspaces {
+	// A polyglot repository has no workspace list; its installable directories
+	// are the dependency steps instead.
+	dirs := r.Workspaces
+	if len(dirs) == 0 {
+		for _, s := range r.DepSteps {
+			dirs = append(dirs, s.Dir)
+		}
+	}
+	for _, ws := range dirs {
 		pkg := readPackageJSON(filepath.Join(r.Root, ws, "package.json"))
 		if pkg == nil {
 			continue
@@ -365,11 +450,29 @@ func (r *Result) detectDBProfiles() map[string]string {
 				continue
 			}
 			if _, taken := out[profile]; !taken {
-				out[profile] = scriptCmd(r.PackageMgr, ws, n)
+				out[profile] = r.profileCmd(ws, n)
 			}
 		}
 	}
 	return out
+}
+
+// profileCmd builds the command that runs a database script.
+//
+// A workspace member is addressed through the root package manager's filter; a
+// standalone sub-project has its own manager and no workspace to filter on, so
+// it has to be entered directly.
+func (r *Result) profileCmd(dir, script string) string {
+	if len(r.Workspaces) > 0 {
+		return scriptCmd(r.PackageMgr, dir, script)
+	}
+	mgr := "npm"
+	for _, s := range r.DepSteps {
+		if s.Dir == dir && s.Manager != "" {
+			mgr = s.Manager
+		}
+	}
+	return "cd " + dir + " && " + mgr + " run " + script
 }
 
 // dumpRank orders candidate profile scripts, lowest first.
@@ -408,29 +511,129 @@ func scriptCmd(mgr, ws, script string) string {
 	}
 }
 
+// shellDefault resolves `${VAR:-fallback}` to its fallback and leaves anything
+// else untouched. Compose files routinely write ports and credentials that way.
+var shellSubstRe = regexp.MustCompile(`^\$\{[A-Za-z_][A-Za-z0-9_]*:-([^}]*)\}$`)
+
+func shellDefault(s string) string {
+	s = strings.TrimSpace(s)
+	if m := shellSubstRe.FindStringSubmatch(s); m != nil {
+		return m[1]
+	}
+	return s
+}
+
+// hostPort extracts the host side of a compose port mapping.
+//
+// Splitting on the first colon is wrong: `${DB_PORT:-25446}:5432` contains a
+// colon inside the shell substitution, so the container port has to be taken
+// off the end instead. An optional bind address may also precede the host port.
+func hostPort(spec string) int {
+	s := strings.Trim(strings.TrimSpace(spec), `"'`)
+	if i := strings.LastIndex(s, ":"); i >= 0 {
+		s = s[:i]
+	}
+	if n := atoi(shellDefault(s)); n > 0 {
+		return n
+	}
+	// Still not a number — an "ip:port" form. Take the trailing segment.
+	if i := strings.LastIndex(s, ":"); i >= 0 {
+		return atoi(shellDefault(s[i+1:]))
+	}
+	return 0
+}
+
 func (r *Result) detectEnv() {
 	r.EnvValues = map[string]string{}
+	r.ServiceEnv = map[string]string{}
+
+	// The root env file, if there is one.
 	for _, name := range []string{".env", ".env.local", ".env.development"} {
-		b, err := os.ReadFile(filepath.Join(r.Root, name))
-		if err != nil {
+		if r.readEnvFile(name, "") {
+			r.EnvFile = name
+			break
+		}
+	}
+
+	// Polyglot repositories keep an env file per sub-project instead. Record
+	// which service owns which file, because each has to be rewritten
+	// separately — there is no shared root file to put the ports in.
+	//
+	// Symlinks have to be resolved first. A monorepo commonly links every
+	// workspace's .env back to one root file, and treating those as distinct
+	// would have each service read the same values and then write conflicting
+	// ones into a single file.
+	claimed := map[string]bool{}
+	if r.EnvFile != "" {
+		claimed[realPath(filepath.Join(r.Root, r.EnvFile))] = true
+	}
+	for i := range r.Services {
+		s := &r.Services[i]
+		if s.Dir == "" || s.Dir == "." {
 			continue
 		}
-		r.EnvFile = name
-		for _, line := range strings.Split(string(b), "\n") {
-			line = strings.TrimSpace(line)
-			if line == "" || strings.HasPrefix(line, "#") {
+		for _, name := range []string{".env", ".env.local", ".env.development"} {
+			rel := filepath.Join(s.Dir, name)
+			real := realPath(filepath.Join(r.Root, rel))
+			if _, err := os.Stat(filepath.Join(r.Root, rel)); err != nil {
 				continue
 			}
-			k, v, ok := strings.Cut(line, "=")
-			if !ok {
-				continue
+			if claimed[real] {
+				break // shares a file already accounted for — not its own
 			}
-			k = strings.TrimSpace(k)
-			r.EnvKeys = append(r.EnvKeys, k)
-			r.EnvValues[k] = strings.Trim(strings.TrimSpace(v), `"'`)
+			if r.readEnvFile(rel, s.Name) {
+				claimed[real] = true
+				r.ServiceEnv[s.Name] = rel
+			}
+			break
 		}
-		return
 	}
+}
+
+// realPath resolves symlinks, falling back to the input when it cannot.
+func realPath(p string) string {
+	if rp, err := filepath.EvalSymlinks(p); err == nil {
+		return rp
+	}
+	return p
+}
+
+// readEnvFile records a file's keys and values, returning whether it existed.
+// Values are scoped per service so two sub-projects can both define PORT.
+func (r *Result) readEnvFile(rel, service string) bool {
+	b, err := os.ReadFile(filepath.Join(r.Root, rel))
+	if err != nil {
+		return false
+	}
+	for _, line := range strings.Split(string(b), "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		k, v, ok := strings.Cut(line, "=")
+		if !ok {
+			continue
+		}
+		k = strings.TrimSpace(k)
+		v = strings.Trim(strings.TrimSpace(v), `"'`)
+		if service == "" {
+			r.EnvKeys = append(r.EnvKeys, k)
+			r.EnvValues[k] = v
+		} else {
+			r.EnvValues[service+"\x00"+k] = v
+		}
+	}
+	return true
+}
+
+// envValueFor returns a key's value as seen by one service: its own env file
+// first, then the root one.
+func (r *Result) envValueFor(service, key string) (string, bool) {
+	if v, ok := r.EnvValues[service+"\x00"+key]; ok {
+		return v, true
+	}
+	v, ok := r.EnvValues[key]
+	return v, ok
 }
 
 // portsFromEnv fills in ports for services whose port comes from the
@@ -441,9 +644,18 @@ func (r *Result) portsFromEnv() {
 		if s.CurrentPort > 0 || s.PortVia != "env" {
 			continue
 		}
-		// Only trust the env file when exactly one service reads that key.
-		// Several frontends commonly share the generic key PORT, and the value
-		// in .env belongs to whichever service the file was written for.
+		// A service with its own env file owns every key in it, so there is no
+		// ambiguity to resolve.
+		if own, hasOwn := r.ServiceEnv[s.Name]; hasOwn && own != "" {
+			if v, ok := r.envValueFor(s.Name, s.PortKey); ok {
+				s.CurrentPort = atoi(v)
+			}
+			continue
+		}
+
+		// Otherwise only trust a shared env file when exactly one service reads
+		// that key. Several frontends commonly share the generic key PORT, and
+		// the value in .env belongs to whichever service it was written for.
 		//
 		// The exception is the sole backend: a shared .env in a repository with
 		// one server is written for that server, so its PORT is the backend's
