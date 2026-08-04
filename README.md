@@ -149,3 +149,7 @@ make build   # bin/grove
 make vet
 make cross   # proves the platform stubs still compile for darwin/linux/windows
 ```
+
+## License
+
+MIT — see [LICENSE](LICENSE).
