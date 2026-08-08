@@ -11,6 +11,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 )
 
 // FileName is the per-repository config, committed to git so a team shares one
@@ -168,6 +170,77 @@ type DB struct {
 	Migrate    string            `json:"migrate,omitempty"`
 	MigrateDir string            `json:"migrateDir,omitempty"`
 	Verify     Verify            `json:"verify"`
+
+	// InitDir is a directory in the worktree mounted read-only at
+	// /docker-entrypoint-initdb.d, so a project's own bootstrap SQL runs on a
+	// fresh volume. Without it a project whose roles/grants live in such a script
+	// gets a container that looks healthy but has none of them — for a
+	// Postgres-RLS project that silently removes the authorization floor.
+	//
+	// When set, those scripts OWN database creation: POSTGRES_DB stays "postgres"
+	// so a `CREATE DATABASE` inside them cannot collide with one the entrypoint
+	// already made. See BootstrapDB.
+	InitDir string `json:"initDir,omitempty"`
+
+	// Env are extra container environment variables, templated like every other
+	// value here. Init scripts routinely read a database name or passwords from
+	// the environment, and there is otherwise no way to give them one.
+	Env map[string]string `json:"env,omitempty"`
+
+	// VolumeMount is where the data volume is mounted inside the container.
+	// Empty means "derive from the image" — see DataMount.
+	VolumeMount string `json:"volumeMount,omitempty"`
+}
+
+// pgMajor extracts the major version from a Postgres image reference such as
+// "postgres:18", "postgres:16.3-alpine" or "docker.io/library/postgres:18.1".
+// Returns 0 when there is no numeric tag to read (":latest", a digest, a fork).
+func pgMajor(image string) int {
+	_, tag, ok := strings.Cut(image, ":")
+	if !ok {
+		return 0
+	}
+	// A digest ("image@sha256:...") leaves a hex blob here, and a registry port
+	// ("host:5000/img") leaves the port plus a path — neither is a version.
+	if strings.ContainsAny(tag, "/@") {
+		return 0
+	}
+	digits := tag
+	if i := strings.IndexFunc(tag, func(r rune) bool { return r < '0' || r > '9' }); i >= 0 {
+		digits = tag[:i]
+	}
+	n, err := strconv.Atoi(digits)
+	if err != nil {
+		return 0
+	}
+	return n
+}
+
+// DataMount is where the data volume belongs inside the container.
+//
+// Postgres 18 moved PGDATA to /var/lib/postgresql/<major>/docker. Mounting the
+// volume at the historical /var/lib/postgresql/data on such an image is not an
+// error — it creates an unused empty directory while the real data lives in the
+// container's writable layer, so everything works until the container is
+// recreated and then the database is silently empty.
+func (d *DB) DataMount() string {
+	if d.VolumeMount != "" {
+		return d.VolumeMount
+	}
+	if pgMajor(d.Image) >= 18 {
+		return "/var/lib/postgresql"
+	}
+	return "/var/lib/postgresql/data"
+}
+
+// BootstrapDB is the value for POSTGRES_DB. Init scripts that create the real
+// database need the entrypoint to leave that name alone, so they bootstrap
+// against "postgres" instead.
+func (d *DB) BootstrapDB(dbName string) string {
+	if d.InitDir != "" {
+		return "postgres"
+	}
+	return dbName
 }
 
 // Verify is the post-restore proof that a database actually holds data. A

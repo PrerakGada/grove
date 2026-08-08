@@ -90,11 +90,31 @@ the contract, detection is only a convenience.
   "db": {
     "driver": "docker-postgres", "band": 5500, "image": "postgres:16",
     "name": "acme_wt{{slot}}", "container": "pg-acme-wt{{slot}}",
+    "initDir": "db/init",
+    "env": { "APP_DB_NAME": "{{db.name}}" },
     "profiles": { "seed": "pnpm db:seed-baseline" }, "default": "seed",
     "verify": { "minTables": 10, "minRows": 1 }
   }
 }
 ```
+
+`db.initDir` mounts a directory read-only at `/docker-entrypoint-initdb.d`, so a
+project's own bootstrap SQL runs on a fresh volume. Reach for it when privileges
+live in those scripts: roles are cluster state and `pg_dump` never carries them, so
+without it a restored dump refers to roles that do not exist — psql looks healthy
+while the application gets permission errors. When set, the scripts own database
+creation, so `POSTGRES_DB` stays `postgres` and a `CREATE DATABASE` inside them
+cannot collide with the entrypoint's. `db.env` passes them templated values.
+
+`db.volumeMount` overrides where the data volume is mounted. The default follows
+the image: Postgres 18 moved PGDATA under `/var/lib/postgresql/<major>/`, so the
+volume belongs at `/var/lib/postgresql` there and at `/var/lib/postgresql/data`
+before it. Getting this wrong is silent — data lands in the container layer and
+disappears on recreation.
+
+`db.profiles` commands run in the **main checkout**, and only when the cached dump
+is missing. Write one that builds the fixture somewhere disposable and prints a
+file; a command that seeds "the" database will seed the developer's own.
 
 Values are templated with `{{port.<service>}}`, `{{slot}}`, `{{name}}`,
 `{{db.name}}`, `{{main}}`, `{{worktree}}`. Unknown variables are a hard error, so

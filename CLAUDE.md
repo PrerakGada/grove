@@ -87,6 +87,23 @@ two generators emitting the same container name on the same port — one seeded,
 empty — so whichever ran last won, and the convenient command produced the empty
 one. `dbx.AssertPopulated` is a hard error, not a warning.
 
+**The data volume mount path is version-dependent (`db.DataMount`).** Postgres 18
+moved PGDATA to `/var/lib/postgresql/<major>/docker`. Mounting the volume at the
+historical `/var/lib/postgresql/data` on an 18 image is not an error — it creates
+an unused empty directory while the real data sits in the container's writable
+layer. Everything works until the container is recreated, and then the database is
+silently empty and `VolumeExists()` still says it is not fresh, so no restore
+happens either. Derived from the image tag, overridable with `db.volumeMount`.
+
+**`db.initDir` exists because roles are cluster state that `pg_dump` never
+carries.** A project whose privilege model lives in `docker-entrypoint-initdb.d`
+(two-role Postgres RLS, say) gets a container that starts, passes its healthcheck
+and restores a dump — while missing every role the dump's `ALTER ... OWNER` and
+`GRANT` statements refer to. The failure surfaces as a working psql and a 401ing
+API. When `initDir` is set the scripts OWN database creation, so `POSTGRES_DB`
+stays `postgres` and their `CREATE DATABASE` cannot collide with the entrypoint's
+(`db.BootstrapDB`). `db.env` feeds them their passwords and database name.
+
 **Dependencies are per-worktree by default.** A Prisma-style generator with no
 `output` writes into `node_modules`, so a shared tree means one `generate`
 rewrites the client for the main checkout and every worktree. Vite's pre-bundle

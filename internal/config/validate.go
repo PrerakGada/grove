@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -58,6 +59,15 @@ func (c *Config) Validate() error {
 		}
 		if c.DB.Driver != "docker-postgres" {
 			errs = append(errs, fmt.Sprintf("db.driver %q not supported yet (have: docker-postgres, none)", c.DB.Driver))
+		}
+		if filepath.IsAbs(c.DB.InitDir) {
+			errs = append(errs, fmt.Sprintf(
+				"db.initDir %q must be relative to the worktree — an absolute path would mount "+
+					"the same directory into every worktree", c.DB.InitDir))
+		}
+		if c.DB.VolumeMount != "" && !strings.HasPrefix(c.DB.VolumeMount, "/") {
+			errs = append(errs, fmt.Sprintf(
+				"db.volumeMount %q must be an absolute path inside the container", c.DB.VolumeMount))
 		}
 		// Empty profiles is allowed: the project may only ever want empty
 		// databases, or the commands may not be written yet. `wt db` refuses at
