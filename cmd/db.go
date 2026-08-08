@@ -138,6 +138,15 @@ func provisionDB(cfg *config.Config, root, wtPath, name string, slot int,
 			return err
 		}
 	} else {
+		// Restoring only happens on a fresh volume, so asking for a DIFFERENT
+		// profile here would keep the existing data and then relabel it below —
+		// leaving the marker, and every later `grove db`, confidently wrong about
+		// what the database holds. Refuse and name the flag that does the switch.
+		if prev := provision.ReadMarker(wtPath, config.DBProfileFile); prev != "" && prev != profile {
+			return fmt.Errorf("%q already holds %s data, and grove will not relabel it as %s.\n"+
+				"    Switching profile means replacing the data:  grove db %s %s --reseed\n"+
+				"    (that destroys the current %s database)", name, prev, profile, name, profile, prev)
+		}
 		ui.Info("reusing the existing %s database", profile)
 	}
 
