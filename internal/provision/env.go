@@ -48,11 +48,19 @@ func WriteEnvFiles(cfg *config.Config, mainRoot, wtPath, name string, slot int, 
 
 		base, err := os.ReadFile(src)
 		if err != nil {
-			if os.IsNotExist(err) {
+			// A file that exists only to carry grove's own computed values has
+			// nothing to inherit, so requiring a committed seed copy would force
+			// projects to track a file grove rewrites in every worktree — which
+			// then reads as uncommitted changes forever and blocks `grove delete`.
+			// Start from empty instead; the assignments below fill it.
+			if os.IsNotExist(err) && len(f.Set)+len(f.Fullstack) > 0 {
+				base = nil
+			} else if os.IsNotExist(err) {
 				return fmt.Errorf("%s not found in the main checkout — "+
 					"grove seeds each worktree's env from it", f.Path)
+			} else {
+				return err
 			}
-			return err
 		}
 
 		set := map[string]string{}
