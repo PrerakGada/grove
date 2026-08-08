@@ -103,40 +103,15 @@ func runList(cmd *cobra.Command, args []string) error {
 		})
 	}
 
-	header := []string{"WORKTREE", "BRANCH", "SLOT", "MODE", "DIRTY", "DEPS", "RUNNING"}
-	width := make([]int, len(header))
-	for i, h := range header {
-		width[i] = len(h)
-	}
+	tbl := ui.NewTable("WORKTREE", "BRANCH", "SLOT", "MODE", "DIRTY", "DEPS", "RUNNING")
 	for _, r := range rows {
-		for i, c := range r {
-			if len(c) > width[i] {
-				width[i] = len(c)
-			}
-		}
-	}
-
-	line := func(cells []string) string {
-		var b strings.Builder
-		b.WriteString("  ")
-		for i, c := range cells {
-			if i == len(cells)-1 {
-				b.WriteString(c) // last column is free to run long
-				break
-			}
-			b.WriteString(c)
-			b.WriteString(strings.Repeat(" ", width[i]-len(c)+2))
-		}
-		return strings.TrimRight(b.String(), " ")
+		tbl.Row(r...)
 	}
 
 	fmt.Println()
 	fmt.Printf("%s  %s\n", ui.Title.Render(cfg.Project), ui.Dim.Render(root))
 	fmt.Println()
-	fmt.Println(ui.Dim.Render(line(header)))
-	for _, r := range rows {
-		fmt.Println(line(r))
-	}
+	tbl.Print()
 
 	fmt.Println()
 	if legacy > 0 {

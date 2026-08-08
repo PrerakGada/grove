@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/PrerakGada/grove/internal/config"
 	"github.com/PrerakGada/grove/internal/provision"
@@ -88,43 +87,22 @@ func runPS(cmd *cobra.Command, args []string) error {
 	fmt.Printf("%s  %s\n", ui.Title.Render(cfg.Project), ui.Dim.Render(root))
 	fmt.Println()
 
+	tbl := ui.NewTable("WORKTREE", "SERVICE", "PORT", "PID", "STATE")
+
+	// The header prints even with nothing running: an empty table is a state,
+	// not an error. Rendering it through the same table keeps the empty and
+	// populated forms from drifting apart.
 	if len(rows) == 0 {
-		fmt.Println(ui.Dim.Render("  WORKTREE  SERVICE  PORT  PID  STATE"))
+		tbl.Print()
 		fmt.Println()
 		ui.Info("Nothing running. Start one: grove up <name>")
 		return nil
 	}
 
-	header := []string{"WORKTREE", "SERVICE", "PORT", "PID", "STATE"}
-	width := make([]int, len(header))
-	for i, h := range header {
-		width[i] = len(h)
-	}
-	cells := make([][]string, 0, len(rows))
 	for _, r := range rows {
-		c := []string{r.wt, r.svc, r.port, r.pid, r.state}
-		for i, v := range c {
-			if len(v) > width[i] {
-				width[i] = len(v)
-			}
-		}
-		cells = append(cells, c)
+		tbl.Row(r.wt, r.svc, r.port, r.pid, r.state)
 	}
-	line := func(c []string) string {
-		var b strings.Builder
-		b.WriteString("  ")
-		for i, v := range c {
-			b.WriteString(v)
-			if i < len(c)-1 {
-				b.WriteString(strings.Repeat(" ", width[i]-len(v)+2))
-			}
-		}
-		return b.String()
-	}
-	fmt.Println(ui.Dim.Render(line(header)))
-	for _, c := range cells {
-		fmt.Println(line(c))
-	}
+	tbl.Print()
 	fmt.Println()
 	ui.Info("%d service(s) running", running)
 	return nil

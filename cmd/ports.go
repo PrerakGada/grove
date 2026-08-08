@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/PrerakGada/grove/internal/config"
@@ -50,27 +51,27 @@ func runPorts(cmd *cobra.Command, args []string) error {
 	fmt.Println()
 
 	svcs := cfg.Services
-	header := fmt.Sprintf("  %-10s %-8s", "", "band")
+	header := []string{"WORKTREE", "SLOT"}
 	for _, s := range svcs {
-		header += fmt.Sprintf(" %-9s", s.Name)
+		header = append(header, strings.ToUpper(s.Name))
 	}
 	if cfg.HasDB() {
-		header += fmt.Sprintf(" %-9s", "db")
+		header = append(header, "DB")
 	}
-	fmt.Println(ui.Dim.Render(header))
+	tbl := ui.NewTable(header...)
 
-	line := func(label string, slot int) {
-		row := fmt.Sprintf("  %-10s %-8d", label, slot)
+	add := func(label string, slot int) {
+		row := []string{label, strconv.Itoa(slot)}
 		for _, s := range svcs {
-			row += fmt.Sprintf(" %-9d", s.Band+slot)
+			row = append(row, strconv.Itoa(s.Band+slot))
 		}
 		if cfg.HasDB() {
-			row += fmt.Sprintf(" %-9d", cfg.DB.Band+slot)
+			row = append(row, strconv.Itoa(cfg.DB.Band+slot))
 		}
-		fmt.Println(row)
+		tbl.Row(row...)
 	}
 
-	line("main", 0)
+	add("main", 0)
 	if proj != nil {
 		names := make([]string, 0, len(proj.Slots))
 		for n := range proj.Slots {
@@ -78,9 +79,10 @@ func runPorts(cmd *cobra.Command, args []string) error {
 		}
 		sort.Slice(names, func(i, j int) bool { return proj.Slots[names[i]] < proj.Slots[names[j]] })
 		for _, n := range names {
-			line(n, proj.Slots[n])
+			add(n, proj.Slots[n])
 		}
 	}
+	tbl.Print()
 
 	fmt.Println()
 	used := 0
@@ -109,13 +111,12 @@ func printGlobalPorts() error {
 	fmt.Println()
 	fmt.Println(ui.Title.Render("Registered projects") + "  " + ui.Dim.Render(registry.Home()))
 	fmt.Println()
-	fmt.Printf(ui.Dim.Render("  %-18s %-6s %-6s %-28s %s")+"\n",
-		"PROJECT", "SLOTS", "MAX", "BANDS", "ROOT")
+	tbl := ui.NewTable("PROJECT", "SLOTS", "MAX", "BANDS", "ROOT").Dim(4)
 	for _, n := range names {
 		p := reg.Projects[n]
-		fmt.Printf("  %-18s %-6d %-6d %-28s %s\n",
-			n, len(p.Slots), p.MaxSlots, truncate(bandSummary(p.Bands), 27), ui.Dim.Render(p.Root))
+		tbl.Row(n, strconv.Itoa(len(p.Slots)), strconv.Itoa(p.MaxSlots), bandSummary(p.Bands), p.Root)
 	}
+	tbl.Print()
 	fmt.Println()
 	if len(names) == 0 {
 		ui.Info("Nothing registered yet. Run `grove init` inside a repository to add one.")
