@@ -1,6 +1,7 @@
 import { BandRuler } from "@/components/BandRuler";
 import { Wordmark, GitHubIcon } from "@/components/Brand";
 import { CopyCommand } from "@/components/CopyCommand";
+import { InstallButton } from "@/components/InstallButton";
 import { Lifecycle } from "@/components/Lifecycle";
 import { Nav } from "@/components/Nav";
 import { Section } from "@/components/Section";
@@ -73,8 +74,9 @@ export default async function Home() {
               branches running at once, and not one of them holding a terminal.
             </p>
 
+            {/* the command itself is shown by the install form (InstallButton) */}
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <CopyCommand command={INSTALL} />
+              <InstallButton command={INSTALL} />
               <a
                 href={REPO}
                 target="_blank"
@@ -86,7 +88,14 @@ export default async function Home() {
               </a>
             </div>
 
+            <noscript>
+              <InstallCommandText />
+            </noscript>
+
             <p className="mt-4 font-mono text-xs text-fg-dim">
+              The go install command is on the next step.
+            </p>
+            <p className="mt-1.5 font-mono text-xs text-fg-dim">
               Go 1.26+ · macOS and Linux · Windows via WSL2
             </p>
 
@@ -397,7 +406,10 @@ export default async function Home() {
               </p>
 
               <div className="mx-auto mt-9 flex max-w-xl flex-col gap-3">
-                <CopyCommand command={INSTALL} />
+                <InstallButton command={INSTALL} />
+                <noscript>
+                  <InstallCommandText />
+                </noscript>
                 <CopyCommand command="grove init" />
               </div>
 
@@ -435,7 +447,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 pt-8 pb-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <p className="font-mono text-xs text-fg-dim">
             MIT · built by{" "}
             <a
@@ -474,7 +486,31 @@ export default async function Home() {
             </a>
           </div>
         </div>
+
+        {/* what the tracker in layout.tsx does, per
+            ~/work/company/infra/product-analytics.md step 5 */}
+        <div className="mx-auto max-w-6xl px-5 pb-8 sm:px-8">
+          <p className="max-w-3xl text-[12px] leading-relaxed text-fg-dim">
+            This site counts page views and Install clicks with its own
+            cookieless counter: no cookies, no IP addresses stored, nothing
+            shared. The short form shown before the install command is
+            optional. Filling it by signing in with Google or Apple shares only
+            your name and email, used only to understand who uses Grove and
+            never shared or sold. The grove CLI itself has no telemetry.
+          </p>
+        </div>
       </footer>
     </>
+  );
+}
+
+/* The command for visitors without JavaScript, where the install form (and the
+   button that opens it) cannot run. Plain text: nothing here needs a script. */
+function InstallCommandText() {
+  return (
+    <p className="mt-3 rounded-lg border border-line bg-surface px-4 py-3 text-left font-mono text-[12px] break-all text-fg sm:text-[13px]">
+      <span className="text-fg-dim select-none">$ </span>
+      {INSTALL}
+    </p>
   );
 }

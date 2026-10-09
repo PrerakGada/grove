@@ -169,6 +169,11 @@ The page also states the gaps — no tests, Postgres-only, WSL2 on Windows —
 because the "Known gaps" list below is the honest version and the site must not
 drift from it.
 
+The install command is not printed on the page. Both Install buttons open the
+shared product counter's optional form (api.prerakgada.in, slug `grove`), which
+shows `go install` after it; JavaScript-off and blocked-tracker visitors still
+get the command. How and why: `site/AGENTS.md`.
+
 ## Conventions
 
 - `make build` · `make install` (symlinks into `~/.local/bin`) · `make vet` ·

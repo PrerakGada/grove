@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter_Tight, JetBrains_Mono } from "next/font/google";
+import { INSTALL } from "@/lib/content";
 import "./globals.css";
 
 const interTight = Inter_Tight({
@@ -79,6 +80,23 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       className={`${interTight.variable} ${jetbrainsMono.variable} h-full`}
     >
+      <head>
+        {/* The shared cookieless counter for product pages
+            (~/work/company/infra/product-analytics.md). data-form turns on its
+            optional "who is installing" form; the Install buttons carry
+            data-pt-command, and data-command is what the form shows after it.
+            Bump ?v= whenever the tracker changes: Cloudflare caches it. */}
+        <script
+          defer
+          src="https://api.prerakgada.in/v1/p/tracker.js?v=3"
+          data-product="grove"
+          data-form=""
+          data-name="Grove"
+          data-accent="#3fdb84"
+          data-command-label="Go"
+          data-command={INSTALL}
+        />
+      </head>
       <body className="min-h-full antialiased">{children}</body>
     </html>
   );
