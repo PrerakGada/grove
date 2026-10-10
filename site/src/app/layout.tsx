@@ -88,7 +88,7 @@ export default function RootLayout({
             Bump ?v= whenever the tracker changes: Cloudflare caches it. */}
         <script
           defer
-          src="https://api.prerakgada.in/v1/p/tracker.js?v=3"
+          src="https://api.prerakgada.in/v1/p/tracker.js?v=4"
           data-product="grove"
           data-form=""
           data-name="Grove"
