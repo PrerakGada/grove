@@ -94,3 +94,15 @@ D=$(mktemp -d) && git -C .. archive HEAD site | tar -x -C "$D" \
   Apple line in the footer. Replaced the 5 Aug deployment of `7a93cf4`.
   The tag is `?v=4` because Cloudflare cached the old tracker under `?v=3`;
   never point the page at a version number fetched before the backend shipped it.
+- **10 Oct 2026, later**: `4fba654` to production. Prerak moved Google / Apple
+  sign-in off landing-page download forms (it belongs inside apps with a login);
+  the shared backend now serves the form with both providers off. The footer no
+  longer says the form can be filled by signing in with Google or Apple, and the
+  tag is `?v=5` so the page stops loading the Cloudflare-cached `?v=4` copy that
+  still offers Continue with Apple. Deployed from an export of the commit with the
+  command above. Deployment `dpl_AZTWXVdbgY6yCJreDDwv9ZuxPALa`
+  (`grove-9vbua46r4-engaze.vercel.app`), aliased to grove.prerakgada.in. Checked
+  with no-cache curl on both: `tracker.js?v=5` only (the tag and its RSC copy),
+  two `data-pt-command` buttons, the command only in `<noscript>`, `data-command`
+  and script payloads, no sign-in wording (the remaining Google / Apple hits are
+  the `googlebot` meta and the "Apple Color Emoji" font stack). Still no CSP.
