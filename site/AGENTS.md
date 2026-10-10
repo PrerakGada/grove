@@ -81,3 +81,16 @@ D=$(mktemp -d) && git -C .. archive HEAD site | tar -x -C "$D" \
   && mkdir -p "$D/site/.vercel" && cp .vercel/project.json "$D/site/.vercel/" \
   && (cd "$D/site" && vercel deploy --prod --scope engaze --yes)
 ```
+
+## Deployments
+
+- **10 Oct 2026**: `3ad0d2b` to production (the counter and install gate from
+  `a3b5cf6`, tracker `?v=4`), deployed from an export of `HEAD` with the command
+  above, not from the working tree, so the uncommitted 12 Sep brand round did
+  not ship. Deployment `dpl_8cYpJtSiBCTP6ZPDpvp32mU8qBm3`
+  (`grove-87w60u1qh-engaze.vercel.app`), aliased to grove.prerakgada.in.
+  Checked with curl on both: one `tracker.js?v=4` tag, two `data-pt-command`
+  buttons, the command only in `<noscript>` and `data-command`, the Google /
+  Apple line in the footer. Replaced the 5 Aug deployment of `7a93cf4`.
+  The tag is `?v=4` because Cloudflare cached the old tracker under `?v=3`;
+  never point the page at a version number fetched before the backend shipped it.
