@@ -54,7 +54,7 @@ what it counts and what the form asks (step 5 of that guide).
 
 **The `go install` command is never printed on the page.** Both Install buttons
 carry `data-pt-command`; the tracker opens its optional form (name, email, role,
-referral, or Google / Apple sign-in) and shows the command after it, submitted
+referral, every field optional) and shows the command after it, submitted
 or skipped. Three fallbacks keep an install from depending on the counter:
 `<noscript>` copies for JavaScript-off visitors; `InstallButton` revealing the
 command in place when the tracker never loaded (ad blockers do block

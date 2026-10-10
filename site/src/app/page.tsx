@@ -494,9 +494,9 @@ export default async function Home() {
             This site counts page views and Install clicks with its own
             cookieless counter: no cookies, no IP addresses stored, nothing
             shared. The short form shown before the install command is
-            optional. Filling it by signing in with Google or Apple shares only
-            your name and email, used only to understand who uses Grove and
-            never shared or sold. The grove CLI itself has no telemetry.
+            optional. Anything you type in it is used only to understand who
+            uses Grove and is never shared or sold. The grove CLI itself has no
+            telemetry.
           </p>
         </div>
       </footer>
