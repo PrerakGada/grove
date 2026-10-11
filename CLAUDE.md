@@ -117,6 +117,17 @@ silently becomes full copies. `provision.cowViable` preflights and downgrades
 rather than eating the disk. Note `du` cannot see shared blocks and reports many
 times the real cost — measure with `df`.
 
+**`sweep` proves work survives before deleting, with one test.** "Nothing ahead
+of main" and "already merged into main" are the same fact — `merge-base
+--is-ancestor` — and everything else is a guard around it: the directory the
+shell is in, a locked worktree, a checkout of the base branch itself (which
+passes the ancestor test by definition, so `grove track main` for deploys would
+be swept first, every run), and a worktree whose ports are still live. A squash
+or rebase merge is detected and *reported*, never swept: its commits really are
+absent from the base, so the one guarantee this command makes does not hold.
+Grove's own markers are excluded from the dirty count — nothing gitignores
+them, so counted, no worktree Grove created would ever be sweepable.
+
 **`prune` must free slots.** A registry that only hands slots out shrinks the pool
 on every delete until it runs out for no visible reason.
 
@@ -189,8 +200,8 @@ get the command. How and why: `site/AGENTS.md`.
 
 ## Current state
 
-**All 15 commands built:** init, create, track, setup, delete, db, up, down, ps,
-logs, dev, list, ports, doctor, prune.
+**All 16 commands built:** init, create, track, setup, delete, sweep, db, up,
+down, ps, logs, dev, list, ports, doctor, prune.
 
 **Adopted on two real projects**, both registered in `~/.grove`: a pnpm/Turbo
 monorepo (six services + Postgres, where detection reproduced a hand-written port

@@ -9,7 +9,7 @@ export function Nav({ stars }: { stars?: number }) {
           href="#top"
           className="flex items-center gap-2.5 font-mono text-sm text-fg"
         >
-          <Wordmark className="size-[18px] text-ok" />
+          <Wordmark className="size-8" />
           grove
         </a>
 

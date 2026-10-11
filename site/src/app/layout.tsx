@@ -57,6 +57,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title,
     description,
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Grove — parallel dev environments from Git worktrees" }],
   },
   robots: {
     index: true,
@@ -81,6 +82,7 @@ export default function RootLayout({
       className={`${interTight.variable} ${jetbrainsMono.variable} h-full`}
     >
       <head>
+        <link rel="mask-icon" href="/brand/safari-pinned-tab.svg" color="#3fdb84" />
         {/* The shared cookieless counter for product pages
             (~/work/company/infra/product-analytics.md). data-form turns on its
             optional "who is installing" form; the Install buttons carry

@@ -22,9 +22,10 @@ const LINE = "#1b1f23";
 const OK = "#3fdb84";
 
 export default async function Image() {
-  const [regular, bold] = await Promise.all([
+  const [regular, bold, logo] = await Promise.all([
     readFile(join(process.cwd(), "assets/JetBrainsMono-Regular.ttf")),
     readFile(join(process.cwd(), "assets/JetBrainsMono-Bold.ttf")),
+    readFile(join(process.cwd(), "public/brand/grove-icon.png")),
   ]);
 
   return new ImageResponse(
@@ -44,24 +45,14 @@ export default async function Image() {
       >
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <svg width="30" height="30" viewBox="0 0 20 20" fill="none">
-              <path
-                d="M4.6 3v14"
-                stroke={OK}
-                strokeWidth="1.7"
-                strokeLinecap="round"
-              />
-              <path
-                d="M4.6 6.6h4.4M4.6 10h6.6M4.6 13.4h4.4"
-                stroke={OK}
-                strokeWidth="1.7"
-                strokeLinecap="round"
-                opacity="0.55"
-              />
-              <circle cx="9" cy="6.6" r="1.7" fill={OK} />
-              <circle cx="11.2" cy="10" r="1.7" fill={OK} />
-              <circle cx="9" cy="13.4" r="1.7" fill={OK} />
-            </svg>
+            {/* ImageResponse embeds this local PNG; it does not use next/image. */}
+            <img
+              src={`data:image/png;base64,${logo.toString("base64")}`}
+              width={48}
+              height={48}
+              alt=""
+              style={{ borderRadius: 9 }}
+            />
             <span style={{ color: FG, fontSize: 27 }}>grove</span>
             <span style={{ color: DIM, fontSize: 19, marginLeft: 8 }}>
               open source · go · mit

@@ -1,5 +1,12 @@
 # Grove
 
+<img src="brand/app-icons/desktop/grove-256.png" alt="Grove Git companion" width="128" height="128" />
+
+[Brand assets and usage](brand/README.md)
+
+The complete approved icon/media pack lives in [`brand/`](brand/). Run `make brand-check`
+to verify it or `make site-build` to build the website with branding checks included.
+
 Parallel dev environments from git worktrees. Every worktree gets reserved
 ports, its own dependencies, its own database, and a background runner — so
 many branches run at once without a terminal each.
@@ -133,6 +140,7 @@ grove create <name> [base]    new branch + worktree, provisioned and seeded
 grove track <branch> [name]   check out an existing branch (local or remote)
 grove setup <name>            re-provision: repair ports/links, convert mode or deps
 grove delete <name>           remove worktree, database, slot and branch
+grove sweep                   delete every worktree that is clean and merged
 grove db <name> [profile]     provision its database, verified non-empty
 grove up <name> [service...]  start detached
 grove down <name>             stop (pids, ports, and working directory)
@@ -152,6 +160,15 @@ port, own database seeded and **verified non-empty before the command returns**.
 
 `delete` refuses to run when a worktree has uncommitted changes or unpushed
 commits — worktree removal discards them — and says which flag overrides it.
+
+`sweep` is `delete` applied to everything that is provably finished: clean
+`git status`, and a HEAD that is already an ancestor of the base branch, so
+nothing it deletes can remove a commit the base does not have. It skips the
+directory you are standing in, locked worktrees, a checkout of the base branch
+itself, and anything still listening on its ports. Everything skipped is listed
+with the reason; nothing is deleted without a confirmation or `--yes`. Squash
+and rebase merges are reported, never swept — their commits genuinely are not
+in the base, so the guarantee does not hold.
 
 `down` kills in three passes: recorded pids, then the slot's ports (dev servers
 fork children that outlive their parent), then anything whose working directory

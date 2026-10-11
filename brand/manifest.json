@@ -1,0 +1,1314 @@
+{
+  "name": "Grove",
+  "selected": "Original Grove C Git companion",
+  "approvedSource": "sources/grove-c-approved.png",
+  "approvedSourceSha256": "ff13f9af8ff3244d4027bf3a41c1522f1bfda5c2204625a5736e24a28e8b2f1c",
+  "colorSvg": "Raster-backed; approved colour image embedded losslessly. Monochrome SVGs contain vector paths.",
+  "generatedBy": "pnpm --dir site brand:build",
+  "assets": [
+    {
+      "path": "app-icons/android/res/mipmap-anydpi-v26/ic_launcher.xml",
+      "bytes": 254,
+      "sha256": "915f73ad45d34da75fce63e913a17ee3390a6eb0f3b499da6684e7efc1833d31"
+    },
+    {
+      "path": "app-icons/android/res/mipmap-hdpi/ic_launcher.png",
+      "bytes": 6173,
+      "sha256": "6c1217fa664907fdaa1e417c321c2ff93b093a376fb7a23ea4ee9645782dd557",
+      "width": 72,
+      "height": 72,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/android/res/mipmap-hdpi/ic_launcher_foreground.png",
+      "bytes": 13805,
+      "sha256": "9502cfeb53de46714c37530d018f075ab7bc7ee8198a49dd5886eae67e89dc76",
+      "width": 162,
+      "height": 162,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/android/res/mipmap-mdpi/ic_launcher.png",
+      "bytes": 3289,
+      "sha256": "2cd9158a847ed92f818c79c87a3e100aa7f48f276934a207ff486fd662d0e786",
+      "width": 48,
+      "height": 48,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/android/res/mipmap-mdpi/ic_launcher_foreground.png",
+      "bytes": 7228,
+      "sha256": "708e772689bc8ead60353b0962d567bdf3ab0702317420a8f835146b2b820917",
+      "width": 108,
+      "height": 108,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/android/res/mipmap-xhdpi/ic_launcher.png",
+      "bytes": 11443,
+      "sha256": "94078f0f753d783f8519df5fed88a17494f29035a3f9e60bae45ba14f94b0f9f",
+      "width": 96,
+      "height": 96,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/android/res/mipmap-xhdpi/ic_launcher_foreground.png",
+      "bytes": 21636,
+      "sha256": "1d3259967b46f968ca547423e1ae3d10c9523a32c0a426210618ea3d16b075bc",
+      "width": 216,
+      "height": 216,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/android/res/mipmap-xxhdpi/ic_launcher.png",
+      "bytes": 20194,
+      "sha256": "01a0d708a569522045d41821bd3d42f5f118525df2522016594ae5a11d23aaad",
+      "width": 144,
+      "height": 144,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/android/res/mipmap-xxhdpi/ic_launcher_foreground.png",
+      "bytes": 40492,
+      "sha256": "c461090db3478c881df2192e5425ad7ce953ede0043fe09a213de8ed4a3ae3cf",
+      "width": 324,
+      "height": 324,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/android/res/mipmap-xxxhdpi/ic_launcher.png",
+      "bytes": 36837,
+      "sha256": "3b3b0c632e8256c070488842ae780db26868092d8db90a487995b3b3c3c07cd3",
+      "width": 192,
+      "height": 192,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/android/res/mipmap-xxxhdpi/ic_launcher_foreground.png",
+      "bytes": 64136,
+      "sha256": "697e912841efe84259be3b3db7442250845d7937494eb53b08dd0403bdc8b132",
+      "width": 432,
+      "height": 432,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/android/res/values/colors.xml",
+      "bytes": 75,
+      "sha256": "3ad6cf9a952e5f0a4284160ed8d416b5058782a478638412943e57cafffd0fb1"
+    },
+    {
+      "path": "app-icons/desktop/grove-1024.png",
+      "bytes": 548647,
+      "sha256": "8a44f10574f909c6aeffa93b6a488411782a99e65dfccbb405b4308deacae709",
+      "width": 1024,
+      "height": 1024,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/desktop/grove-128.png",
+      "bytes": 14390,
+      "sha256": "9da532cce0f18fb6dc74927a9bb9a51fb87ed71925d123b8f3feb59a18e96461",
+      "width": 128,
+      "height": 128,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/desktop/grove-16.png",
+      "bytes": 585,
+      "sha256": "847a99bb1b12125c580900a92998838616b6c0668d251e87431cefd04f2c31b2",
+      "width": 16,
+      "height": 16,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/desktop/grove-24.png",
+      "bytes": 991,
+      "sha256": "95d91657ea330a9068941c8768fa1780a588e801bc10248ed3763d24869fabc6",
+      "width": 24,
+      "height": 24,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/desktop/grove-256.png",
+      "bytes": 45197,
+      "sha256": "29ce6ce5130facf8b374ea507f95776349da33d277eb5c09ee44a4fad179d142",
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/desktop/grove-32.png",
+      "bytes": 1496,
+      "sha256": "20b681191b37b9a775626eda47b479bce14ea127ced7105d9974ea79d0407b4f",
+      "width": 32,
+      "height": 32,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/desktop/grove-48.png",
+      "bytes": 2697,
+      "sha256": "a6d5be0364bbe4e3cda986f34a6ba7f206d5f3ff0f3c3a55859aab5e19318d63",
+      "width": 48,
+      "height": 48,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/desktop/grove-512.png",
+      "bytes": 156168,
+      "sha256": "85b04fd90a69f7792bffbcac9bf2d8e4a0c5a8469f7b1caddc269ea2a306fe26",
+      "width": 512,
+      "height": 512,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/desktop/grove-64.png",
+      "bytes": 4339,
+      "sha256": "d73a4492a16a6103f6a067412b434cff68b42a8be3b6b2eb9a241af27c1a26a4",
+      "width": 64,
+      "height": 64,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "bytes": 2299,
+      "sha256": "b53965231d0764feee62f3dfc1cc54461426dad8c0b6c7ee606601d5b4eae5a2"
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-ios-marketing-1024@1x.png",
+      "bytes": 719532,
+      "sha256": "17b051ad0b62718a993e70227d0c94e24e6936b0b83fb4acc3572b6a2fe2070d",
+      "width": 1024,
+      "height": 1024,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-ipad-20@1x.png",
+      "bytes": 871,
+      "sha256": "cffa3219e6ec15629219b0bc84b210213959fd7d6925a89a91858075e933e98b",
+      "width": 20,
+      "height": 20,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-ipad-20@2x.png",
+      "bytes": 2431,
+      "sha256": "d90ee70f825d3fa8be8801f88f31328f55a7bcc2d5976c78992d364e04247526",
+      "width": 40,
+      "height": 40,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-ipad-29@1x.png",
+      "bytes": 1469,
+      "sha256": "1706b16244f2c0cf55ce75485946d46424e49ecb0535a6cc6331791e85bf9340",
+      "width": 29,
+      "height": 29,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-ipad-29@2x.png",
+      "bytes": 4523,
+      "sha256": "83e0dfe8ab8599191f486f7dadffafdb7356b6d7ec3cab65c4b0ee5d29c919b4",
+      "width": 58,
+      "height": 58,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-ipad-40@1x.png",
+      "bytes": 2431,
+      "sha256": "d90ee70f825d3fa8be8801f88f31328f55a7bcc2d5976c78992d364e04247526",
+      "width": 40,
+      "height": 40,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-ipad-40@2x.png",
+      "bytes": 8852,
+      "sha256": "bf7e13f65fd3d9a76c70427395f272c9b3ef374e9cf3c9e4cc4b24fdc41d6f1f",
+      "width": 80,
+      "height": 80,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-ipad-76@1x.png",
+      "bytes": 6767,
+      "sha256": "010a7f4135bc203f3355169c26893d4b443d9edc0fa4efb7902f4f42c06d7b01",
+      "width": 76,
+      "height": 76,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-ipad-76@2x.png",
+      "bytes": 21875,
+      "sha256": "e090b11b65d0ff6884d01de95be12069de0d4e8cc08e19e6e8e4baa90ea0104d",
+      "width": 152,
+      "height": 152,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-ipad-83.5@2x.png",
+      "bytes": 28488,
+      "sha256": "3b62b6c8a4a92b017ec83d82d030e55132fd21d331041885efefa3cb708b62c1",
+      "width": 167,
+      "height": 167,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-iphone-20@2x.png",
+      "bytes": 2431,
+      "sha256": "d90ee70f825d3fa8be8801f88f31328f55a7bcc2d5976c78992d364e04247526",
+      "width": 40,
+      "height": 40,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-iphone-20@3x.png",
+      "bytes": 4828,
+      "sha256": "a5d7204a4daf46475a1a35d95f8484d62935274b4ce8286d1d8de549ef06ab69",
+      "width": 60,
+      "height": 60,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-iphone-29@2x.png",
+      "bytes": 4523,
+      "sha256": "83e0dfe8ab8599191f486f7dadffafdb7356b6d7ec3cab65c4b0ee5d29c919b4",
+      "width": 58,
+      "height": 58,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-iphone-29@3x.png",
+      "bytes": 10119,
+      "sha256": "deaf30eb05a42749e6b0e4fd4fe8f29deb0ac24d9b5e766a9d3b8ad276fe8e15",
+      "width": 87,
+      "height": 87,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-iphone-40@2x.png",
+      "bytes": 8852,
+      "sha256": "bf7e13f65fd3d9a76c70427395f272c9b3ef374e9cf3c9e4cc4b24fdc41d6f1f",
+      "width": 80,
+      "height": 80,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-iphone-40@3x.png",
+      "bytes": 17592,
+      "sha256": "14d9aa6f541a3c794861a61888a0d69b8c861f7bccd09eaaa81801abbd8fe21a",
+      "width": 120,
+      "height": 120,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-iphone-60@2x.png",
+      "bytes": 17592,
+      "sha256": "14d9aa6f541a3c794861a61888a0d69b8c861f7bccd09eaaa81801abbd8fe21a",
+      "width": 120,
+      "height": 120,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/AppIcon.appiconset/icon-iphone-60@3x.png",
+      "bytes": 33128,
+      "sha256": "0fe12725d018ef9c27dc1572bd494b7335bbb69e320cd6be59687043c498df33",
+      "width": 180,
+      "height": 180,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/ios/Assets.xcassets/Contents.json",
+      "bytes": 59,
+      "sha256": "141dec78f726770fe3b569b7f6d35263546f579fd8ec549d9a1bd5bfdbc4ab73"
+    },
+    {
+      "path": "app-icons/linux/hicolor/128x128/apps/grove.png",
+      "bytes": 14390,
+      "sha256": "9da532cce0f18fb6dc74927a9bb9a51fb87ed71925d123b8f3feb59a18e96461",
+      "width": 128,
+      "height": 128,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/linux/hicolor/16x16/apps/grove.png",
+      "bytes": 585,
+      "sha256": "847a99bb1b12125c580900a92998838616b6c0668d251e87431cefd04f2c31b2",
+      "width": 16,
+      "height": 16,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/linux/hicolor/24x24/apps/grove.png",
+      "bytes": 991,
+      "sha256": "95d91657ea330a9068941c8768fa1780a588e801bc10248ed3763d24869fabc6",
+      "width": 24,
+      "height": 24,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/linux/hicolor/256x256/apps/grove.png",
+      "bytes": 45197,
+      "sha256": "29ce6ce5130facf8b374ea507f95776349da33d277eb5c09ee44a4fad179d142",
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/linux/hicolor/32x32/apps/grove.png",
+      "bytes": 1496,
+      "sha256": "20b681191b37b9a775626eda47b479bce14ea127ced7105d9974ea79d0407b4f",
+      "width": 32,
+      "height": 32,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/linux/hicolor/48x48/apps/grove.png",
+      "bytes": 2697,
+      "sha256": "a6d5be0364bbe4e3cda986f34a6ba7f206d5f3ff0f3c3a55859aab5e19318d63",
+      "width": 48,
+      "height": 48,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/linux/hicolor/512x512/apps/grove.png",
+      "bytes": 156168,
+      "sha256": "85b04fd90a69f7792bffbcac9bf2d8e4a0c5a8469f7b1caddc269ea2a306fe26",
+      "width": 512,
+      "height": 512,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/linux/hicolor/64x64/apps/grove.png",
+      "bytes": 4339,
+      "sha256": "d73a4492a16a6103f6a067412b434cff68b42a8be3b6b2eb9a241af27c1a26a4",
+      "width": 64,
+      "height": 64,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/linux/hicolor/scalable/apps/grove.svg",
+      "bytes": 1151761,
+      "sha256": "c0b938b855c740ce7c3b27f8e5d4bad321fdf9f8f22dfdf5c9e9793c95699a86"
+    },
+    {
+      "path": "app-icons/macos/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "bytes": 1256,
+      "sha256": "0ac05708d05bdd1c6428feef811566aa27def4812152be100d1d7bc2af81553c"
+    },
+    {
+      "path": "app-icons/macos/Assets.xcassets/AppIcon.appiconset/icon_128x128.png",
+      "bytes": 14390,
+      "sha256": "9da532cce0f18fb6dc74927a9bb9a51fb87ed71925d123b8f3feb59a18e96461",
+      "width": 128,
+      "height": 128,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Assets.xcassets/AppIcon.appiconset/icon_128x128@2x.png",
+      "bytes": 45197,
+      "sha256": "29ce6ce5130facf8b374ea507f95776349da33d277eb5c09ee44a4fad179d142",
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Assets.xcassets/AppIcon.appiconset/icon_16x16.png",
+      "bytes": 585,
+      "sha256": "847a99bb1b12125c580900a92998838616b6c0668d251e87431cefd04f2c31b2",
+      "width": 16,
+      "height": 16,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Assets.xcassets/AppIcon.appiconset/icon_16x16@2x.png",
+      "bytes": 1496,
+      "sha256": "20b681191b37b9a775626eda47b479bce14ea127ced7105d9974ea79d0407b4f",
+      "width": 32,
+      "height": 32,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Assets.xcassets/AppIcon.appiconset/icon_256x256.png",
+      "bytes": 45197,
+      "sha256": "29ce6ce5130facf8b374ea507f95776349da33d277eb5c09ee44a4fad179d142",
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Assets.xcassets/AppIcon.appiconset/icon_256x256@2x.png",
+      "bytes": 156168,
+      "sha256": "85b04fd90a69f7792bffbcac9bf2d8e4a0c5a8469f7b1caddc269ea2a306fe26",
+      "width": 512,
+      "height": 512,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Assets.xcassets/AppIcon.appiconset/icon_32x32.png",
+      "bytes": 1496,
+      "sha256": "20b681191b37b9a775626eda47b479bce14ea127ced7105d9974ea79d0407b4f",
+      "width": 32,
+      "height": 32,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Assets.xcassets/AppIcon.appiconset/icon_32x32@2x.png",
+      "bytes": 4339,
+      "sha256": "d73a4492a16a6103f6a067412b434cff68b42a8be3b6b2eb9a241af27c1a26a4",
+      "width": 64,
+      "height": 64,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Assets.xcassets/AppIcon.appiconset/icon_512x512.png",
+      "bytes": 156168,
+      "sha256": "85b04fd90a69f7792bffbcac9bf2d8e4a0c5a8469f7b1caddc269ea2a306fe26",
+      "width": 512,
+      "height": 512,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Assets.xcassets/AppIcon.appiconset/icon_512x512@2x.png",
+      "bytes": 548647,
+      "sha256": "8a44f10574f909c6aeffa93b6a488411782a99e65dfccbb405b4308deacae709",
+      "width": 1024,
+      "height": 1024,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Assets.xcassets/Contents.json",
+      "bytes": 59,
+      "sha256": "141dec78f726770fe3b569b7f6d35263546f579fd8ec549d9a1bd5bfdbc4ab73"
+    },
+    {
+      "path": "app-icons/macos/Grove.icns",
+      "bytes": 1203338,
+      "sha256": "139b62f6662b34c98cdcfb697c765ac5b927f7c8ea741130dd93296e9a84cea6"
+    },
+    {
+      "path": "app-icons/macos/Grove.iconset/icon_128x128.png",
+      "bytes": 14390,
+      "sha256": "9da532cce0f18fb6dc74927a9bb9a51fb87ed71925d123b8f3feb59a18e96461",
+      "width": 128,
+      "height": 128,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Grove.iconset/icon_128x128@2x.png",
+      "bytes": 45197,
+      "sha256": "29ce6ce5130facf8b374ea507f95776349da33d277eb5c09ee44a4fad179d142",
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Grove.iconset/icon_16x16.png",
+      "bytes": 585,
+      "sha256": "847a99bb1b12125c580900a92998838616b6c0668d251e87431cefd04f2c31b2",
+      "width": 16,
+      "height": 16,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Grove.iconset/icon_16x16@2x.png",
+      "bytes": 1496,
+      "sha256": "20b681191b37b9a775626eda47b479bce14ea127ced7105d9974ea79d0407b4f",
+      "width": 32,
+      "height": 32,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Grove.iconset/icon_256x256.png",
+      "bytes": 45197,
+      "sha256": "29ce6ce5130facf8b374ea507f95776349da33d277eb5c09ee44a4fad179d142",
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Grove.iconset/icon_256x256@2x.png",
+      "bytes": 156168,
+      "sha256": "85b04fd90a69f7792bffbcac9bf2d8e4a0c5a8469f7b1caddc269ea2a306fe26",
+      "width": 512,
+      "height": 512,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Grove.iconset/icon_32x32.png",
+      "bytes": 1496,
+      "sha256": "20b681191b37b9a775626eda47b479bce14ea127ced7105d9974ea79d0407b4f",
+      "width": 32,
+      "height": 32,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Grove.iconset/icon_32x32@2x.png",
+      "bytes": 4339,
+      "sha256": "d73a4492a16a6103f6a067412b434cff68b42a8be3b6b2eb9a241af27c1a26a4",
+      "width": 64,
+      "height": 64,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Grove.iconset/icon_512x512.png",
+      "bytes": 156168,
+      "sha256": "85b04fd90a69f7792bffbcac9bf2d8e4a0c5a8469f7b1caddc269ea2a306fe26",
+      "width": 512,
+      "height": 512,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/macos/Grove.iconset/icon_512x512@2x.png",
+      "bytes": 548647,
+      "sha256": "8a44f10574f909c6aeffa93b6a488411782a99e65dfccbb405b4308deacae709",
+      "width": 1024,
+      "height": 1024,
+      "alpha": true
+    },
+    {
+      "path": "app-icons/png/grove-1024.png",
+      "bytes": 719532,
+      "sha256": "17b051ad0b62718a993e70227d0c94e24e6936b0b83fb4acc3572b6a2fe2070d",
+      "width": 1024,
+      "height": 1024,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/png/grove-128.png",
+      "bytes": 16624,
+      "sha256": "de9dc28e33e29d547231be5df3dc853a3493ecb4091e8032f3bb6de1a2a2312f",
+      "width": 128,
+      "height": 128,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/png/grove-16.png",
+      "bytes": 653,
+      "sha256": "9ada4ec9e03d87a30978207275ad2812ffbabbe047f36e2f55324d52dd25cb85",
+      "width": 16,
+      "height": 16,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/png/grove-24.png",
+      "bytes": 1115,
+      "sha256": "3339523f48498818ae2fe6ddd53ffebfd12c293a84e6555278337fe42d0a449d",
+      "width": 24,
+      "height": 24,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/png/grove-256.png",
+      "bytes": 57418,
+      "sha256": "2a66c8122264ef35e54a63916a82428df8b313fbb28dff523fc4749742ca4c3e",
+      "width": 256,
+      "height": 256,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/png/grove-32.png",
+      "bytes": 1704,
+      "sha256": "466025c58c9cb00e489c89c21072ae6ff3acc0d68b4f1329d820f815f92a5fbe",
+      "width": 32,
+      "height": 32,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/png/grove-48.png",
+      "bytes": 3289,
+      "sha256": "2cd9158a847ed92f818c79c87a3e100aa7f48f276934a207ff486fd662d0e786",
+      "width": 48,
+      "height": 48,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/png/grove-512.png",
+      "bytes": 214503,
+      "sha256": "90f22e438d1784cb32ed1a58187891695755496fbf86b7e5890051aa4be2697d",
+      "width": 512,
+      "height": 512,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/png/grove-64.png",
+      "bytes": 5688,
+      "sha256": "eae1e3cd27252c5c4c979faf8921a29f0cb4d100437451a15df0e3b14c59ca62",
+      "width": 64,
+      "height": 64,
+      "alpha": false
+    },
+    {
+      "path": "app-icons/windows/Grove.ico",
+      "bytes": 372526,
+      "sha256": "8e6d60e2ae7925d78759a81bda0cba81974b5338b61858f35e6601fe70079024"
+    },
+    {
+      "path": "logos/grove-color.pdf",
+      "bytes": 841350,
+      "sha256": "49564fd3f75071c8b931259faf864f86699d4ac3e87b483018791aae0eaac1c1"
+    },
+    {
+      "path": "logos/grove-color.svg",
+      "bytes": 868797,
+      "sha256": "deb9d95f63264646fca328f71376e606c89d93925bdce97a7113a5821cfb0f2c"
+    },
+    {
+      "path": "logos/grove-monochrome.pdf",
+      "bytes": 5445,
+      "sha256": "9bc37f65ca96d3c4bfdffce2a9d16f8c2b9d84139476cbcc60207d786dfbb9db"
+    },
+    {
+      "path": "logos/grove-monochrome.svg",
+      "bytes": 8996,
+      "sha256": "3970b8039c101200f9ce46d6d2733c28996045b943c057f3222993339725ce5c"
+    },
+    {
+      "path": "logos/grove-original.jpg",
+      "bytes": 169115,
+      "sha256": "342e6e854918914c05fcfcbf4db7c2db8f9318f474c08cb634caa47c613cbb7e",
+      "width": 1254,
+      "height": 1254,
+      "alpha": false
+    },
+    {
+      "path": "logos/grove-original.png",
+      "bytes": 863556,
+      "sha256": "ff13f9af8ff3244d4027bf3a41c1522f1bfda5c2204625a5736e24a28e8b2f1c",
+      "width": 1254,
+      "height": 1254,
+      "alpha": false
+    },
+    {
+      "path": "logos/grove-original.svg",
+      "bytes": 1151761,
+      "sha256": "c0b938b855c740ce7c3b27f8e5d4bad321fdf9f8f22dfdf5c9e9793c95699a86"
+    },
+    {
+      "path": "logos/grove-original.tiff",
+      "bytes": 855562,
+      "sha256": "8e59d520af766bc9e8f8fe02f307b68955b31ff290e0359ca21cf36a543bbec8",
+      "width": 1254,
+      "height": 1254,
+      "alpha": false
+    },
+    {
+      "path": "logos/grove-original.webp",
+      "bytes": 608214,
+      "sha256": "ee1f977162c4e9e154250aa04b5afb889c12ac4ff7c507e85af2f69206cb5352",
+      "width": 1254,
+      "height": 1254,
+      "alpha": false
+    },
+    {
+      "path": "logos/grove-transparent.png",
+      "bytes": 651332,
+      "sha256": "475d4f480c407ed8f189270a9e9e98636e54628e2d9a21bb4805f9846e202d98",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "path": "logos/grove-transparent.webp",
+      "bytes": 408492,
+      "sha256": "90dbea951c8d9a904125a40927e76a20c3e374ec9dca98a4d931e551e5bd9e91",
+      "width": 1254,
+      "height": 1254,
+      "alpha": true
+    },
+    {
+      "path": "logos/grove-white.svg",
+      "bytes": 8996,
+      "sha256": "9f25a2817cc070ac81cda02c9e3cfc44d712f6449e943b7a06944b52b3a10718"
+    },
+    {
+      "path": "logos/grove-wordmark-dark.png",
+      "bytes": 42723,
+      "sha256": "54ff0a0d7863f11874993061177e2e3545b3e08b15de1af15e9666dd70e5f7a1",
+      "width": 600,
+      "height": 210,
+      "alpha": true
+    },
+    {
+      "path": "logos/grove-wordmark-dark.svg",
+      "bytes": 1153597,
+      "sha256": "e09349b731f9af37756c4d529c5c30f50db8e1a6b8bfee16b8e3405fbf94a907"
+    },
+    {
+      "path": "logos/grove-wordmark-dark.webp",
+      "bytes": 22904,
+      "sha256": "ff672aa6ce33f32231efbe21a42d5f0c39a1fb4452bb5e78ead578275985b5c8",
+      "width": 600,
+      "height": 210,
+      "alpha": false
+    },
+    {
+      "path": "logos/grove-wordmark-light.pdf",
+      "bytes": 842737,
+      "sha256": "dbd1b64c26d62ab0da414f0a3c72839f61dafded380bc7f9d08c66acea478c6e"
+    },
+    {
+      "path": "logos/grove-wordmark-light.png",
+      "bytes": 41319,
+      "sha256": "b6f2d6f9a37244699fca5177143f4027c967b9ea4cfbfffd37555c523b65c8f2",
+      "width": 600,
+      "height": 210,
+      "alpha": true
+    },
+    {
+      "path": "logos/grove-wordmark-light.svg",
+      "bytes": 1153597,
+      "sha256": "85f1758de47e302e3a61f65323467e8376507e51ca06900502f225c5a6cc8afc"
+    },
+    {
+      "path": "logos/grove-wordmark-light.webp",
+      "bytes": 22866,
+      "sha256": "190cb548b2688c42f9d0de621d64ad9329b04394d3e1bbf644552bf60a36e9bf",
+      "width": 600,
+      "height": 210,
+      "alpha": false
+    },
+    {
+      "path": "logos/png/grove-transparent-1024.png",
+      "bytes": 601368,
+      "sha256": "31f5a3071eb6f4b071fc46132120e05b41194b8ab7b48fb03eb4322c543b156e",
+      "width": 1024,
+      "height": 1024,
+      "alpha": true
+    },
+    {
+      "path": "logos/png/grove-transparent-128.png",
+      "bytes": 19154,
+      "sha256": "59126baa8dd82da608f4726ae23194b6db551590af28a27a633b97c9909d9411",
+      "width": 128,
+      "height": 128,
+      "alpha": true
+    },
+    {
+      "path": "logos/png/grove-transparent-256.png",
+      "bytes": 55599,
+      "sha256": "77ae3b9e69cbd341795585ed17e7c4981d7402003b5a242939f355049c8b5f7f",
+      "width": 256,
+      "height": 256,
+      "alpha": true
+    },
+    {
+      "path": "logos/png/grove-transparent-32.png",
+      "bytes": 2189,
+      "sha256": "5ab3633fad1f4894d5b3131841cd747052ff111767c3bb9e451147e124ca356f",
+      "width": 32,
+      "height": 32,
+      "alpha": true
+    },
+    {
+      "path": "logos/png/grove-transparent-512.png",
+      "bytes": 175504,
+      "sha256": "7e5b664fce70f1bc8706c118fce2cbdbc34485d80a8250278fbd65d60ee2d751",
+      "width": 512,
+      "height": 512,
+      "alpha": true
+    },
+    {
+      "path": "logos/png/grove-transparent-64.png",
+      "bytes": 6458,
+      "sha256": "190622cbb0b44bbc2e03f8eced050c2f72e58e1ccb88c748b85877c177575604",
+      "width": 64,
+      "height": 64,
+      "alpha": true
+    },
+    {
+      "path": "logos/png/grove-white-background-1024.png",
+      "bytes": 719532,
+      "sha256": "17b051ad0b62718a993e70227d0c94e24e6936b0b83fb4acc3572b6a2fe2070d",
+      "width": 1024,
+      "height": 1024,
+      "alpha": false
+    },
+    {
+      "path": "logos/png/grove-white-background-128.png",
+      "bytes": 16624,
+      "sha256": "de9dc28e33e29d547231be5df3dc853a3493ecb4091e8032f3bb6de1a2a2312f",
+      "width": 128,
+      "height": 128,
+      "alpha": false
+    },
+    {
+      "path": "logos/png/grove-white-background-256.png",
+      "bytes": 57418,
+      "sha256": "2a66c8122264ef35e54a63916a82428df8b313fbb28dff523fc4749742ca4c3e",
+      "width": 256,
+      "height": 256,
+      "alpha": false
+    },
+    {
+      "path": "logos/png/grove-white-background-32.png",
+      "bytes": 1704,
+      "sha256": "466025c58c9cb00e489c89c21072ae6ff3acc0d68b4f1329d820f815f92a5fbe",
+      "width": 32,
+      "height": 32,
+      "alpha": false
+    },
+    {
+      "path": "logos/png/grove-white-background-512.png",
+      "bytes": 214503,
+      "sha256": "90f22e438d1784cb32ed1a58187891695755496fbf86b7e5890051aa4be2697d",
+      "width": 512,
+      "height": 512,
+      "alpha": false
+    },
+    {
+      "path": "logos/png/grove-white-background-64.png",
+      "bytes": 5688,
+      "sha256": "eae1e3cd27252c5c4c979faf8921a29f0cb4d100437451a15df0e3b14c59ca62",
+      "width": 64,
+      "height": 64,
+      "alpha": false
+    },
+    {
+      "path": "menu-bar/GroveTemplate.imageset/Contents.json",
+      "bytes": 450,
+      "sha256": "f7f86a7fb77890e1b84f66d4a0a65d4754d01c0fea1ff00ab1061418b727f876"
+    },
+    {
+      "path": "menu-bar/GroveTemplate.imageset/GroveTemplate.png",
+      "bytes": 454,
+      "sha256": "5e7f828059e215a7137660295a5b7dfe024bab99f01804469366b00757a367f8",
+      "width": 22,
+      "height": 22,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/GroveTemplate.imageset/GroveTemplate@2x.png",
+      "bytes": 965,
+      "sha256": "1aba0d5008613df0857008dbd651466d1497547e3f1b9190ae57088c46264399",
+      "width": 44,
+      "height": 44,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/GroveTemplate.imageset/GroveTemplate@3x.png",
+      "bytes": 1526,
+      "sha256": "cd2c7f5854305a59f58bfc00c7b1a397e1c63d7d8fe5490f3e50f3385fa3ef03",
+      "width": 66,
+      "height": 66,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/GroveTemplate.pdf",
+      "bytes": 5441,
+      "sha256": "883ae83116b99d2573db26524e10f5dccccb3704d33ef83c4de1395ebe3eb436"
+    },
+    {
+      "path": "menu-bar/GroveTemplate.svg",
+      "bytes": 8996,
+      "sha256": "3970b8039c101200f9ce46d6d2733c28996045b943c057f3222993339725ce5c"
+    },
+    {
+      "path": "menu-bar/GroveWhite.svg",
+      "bytes": 8996,
+      "sha256": "9f25a2817cc070ac81cda02c9e3cfc44d712f6449e943b7a06944b52b3a10718"
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-16@1x.png",
+      "bytes": 337,
+      "sha256": "d40b9272d094c08ec05dcb5a0b2d8fdeb251d104c94371a4c90f5d464a119aae",
+      "width": 16,
+      "height": 16,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-16@2x.png",
+      "bytes": 684,
+      "sha256": "7f29e8e078afdcea0f25b1cead4807a7bbc8b1c273dea3ecd5bff736ab63a6e8",
+      "width": 32,
+      "height": 32,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-16@3x.png",
+      "bytes": 1056,
+      "sha256": "cb5ca7ac7652a15df31e9dcc0d8df4e8e1bde814ce870f0948d7746fa2066344",
+      "width": 48,
+      "height": 48,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-18@1x.png",
+      "bytes": 370,
+      "sha256": "c7e0f0cbbd1ba46f1267d47c198838011b300c09811bf172a27d036b905d87bc",
+      "width": 18,
+      "height": 18,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-18@2x.png",
+      "bytes": 786,
+      "sha256": "f004397de9572b451d33474fef0b2c31ab98d00d8f6f6941d8730462e79b39e3",
+      "width": 36,
+      "height": 36,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-18@3x.png",
+      "bytes": 1194,
+      "sha256": "25be41a7e8143f5595bc5fba577ddb7bb0afd1315518b6c022e6b3bb3a017e7d",
+      "width": 54,
+      "height": 54,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-20@1x.png",
+      "bytes": 409,
+      "sha256": "a2726702904bf73ff13ed7ee23559fa7f83fa7c6566a0ed3fbc958b2857694f1",
+      "width": 20,
+      "height": 20,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-20@2x.png",
+      "bytes": 867,
+      "sha256": "3e6b5c1fdc5d380db460995e185837be316c01fcd2c8258453de4723cdd16e5b",
+      "width": 40,
+      "height": 40,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-20@3x.png",
+      "bytes": 1339,
+      "sha256": "47ed70505d13e9f6505427dfa99cd966e8b107a02062341dc005e7f18797d00b",
+      "width": 60,
+      "height": 60,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-22@1x.png",
+      "bytes": 454,
+      "sha256": "5e7f828059e215a7137660295a5b7dfe024bab99f01804469366b00757a367f8",
+      "width": 22,
+      "height": 22,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-22@2x.png",
+      "bytes": 965,
+      "sha256": "1aba0d5008613df0857008dbd651466d1497547e3f1b9190ae57088c46264399",
+      "width": 44,
+      "height": 44,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-22@3x.png",
+      "bytes": 1526,
+      "sha256": "cd2c7f5854305a59f58bfc00c7b1a397e1c63d7d8fe5490f3e50f3385fa3ef03",
+      "width": 66,
+      "height": 66,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-24@1x.png",
+      "bytes": 502,
+      "sha256": "74972b709495c1fb2060d974044ec6b7bcef0dd9742c98f8a1cb907408efb839",
+      "width": 24,
+      "height": 24,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-24@2x.png",
+      "bytes": 1056,
+      "sha256": "cb5ca7ac7652a15df31e9dcc0d8df4e8e1bde814ce870f0948d7746fa2066344",
+      "width": 48,
+      "height": 48,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-24@3x.png",
+      "bytes": 1640,
+      "sha256": "307e1dd5bf2d43cc95bd34becb58885c04e416f5bbb07eb799a0d2a80fa8570e",
+      "width": 72,
+      "height": 72,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-32@1x.png",
+      "bytes": 684,
+      "sha256": "7f29e8e078afdcea0f25b1cead4807a7bbc8b1c273dea3ecd5bff736ab63a6e8",
+      "width": 32,
+      "height": 32,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-32@2x.png",
+      "bytes": 1441,
+      "sha256": "960d44fbe5dd450abc743675d610da0e6ce5296926edd6881197aca63524c875",
+      "width": 64,
+      "height": 64,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveTemplate-32@3x.png",
+      "bytes": 2273,
+      "sha256": "ed190ab86b740c37930c214c532c2e82e0394625f4edec5b32c7829ea522ee2e",
+      "width": 96,
+      "height": 96,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-16@1x.png",
+      "bytes": 347,
+      "sha256": "b049a1102775451b3d7233249500f416305166dc99b89a1d24d915f58a0d0daf",
+      "width": 16,
+      "height": 16,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-16@2x.png",
+      "bytes": 697,
+      "sha256": "8c4a1db795b52691913b272ea455f4e66b220ad2e09f5c4a85f8005111c831aa",
+      "width": 32,
+      "height": 32,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-16@3x.png",
+      "bytes": 1074,
+      "sha256": "8fb3e9746df621925addc4d6d382015a1dad2d6b1debc91b73649400509e9d48",
+      "width": 48,
+      "height": 48,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-18@1x.png",
+      "bytes": 385,
+      "sha256": "134bcd438bcd5e6a81ebb74fbde654720d4eaabfd19a9abc465d506aef84f9a0",
+      "width": 18,
+      "height": 18,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-18@2x.png",
+      "bytes": 807,
+      "sha256": "4b2f02a62c945d5b275d5d260e0cebf1824bd6676ce933520e7f3ce29f163b61",
+      "width": 36,
+      "height": 36,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-18@3x.png",
+      "bytes": 1219,
+      "sha256": "4dbd5a4709568381457d56ecfa90c9a0e73f342972a719ee06cf7a62623fb589",
+      "width": 54,
+      "height": 54,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-20@1x.png",
+      "bytes": 413,
+      "sha256": "551fb1b315971d412b699b578552d81f13f0470934d60a2e8e15ee363558a8f8",
+      "width": 20,
+      "height": 20,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-20@2x.png",
+      "bytes": 883,
+      "sha256": "5d083efdfb10f6155be4e0431dbaef27a2c4cb329acd1c8ab0b6ef12e7d3fd03",
+      "width": 40,
+      "height": 40,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-20@3x.png",
+      "bytes": 1371,
+      "sha256": "4c6b2fa3ebce8b620f9cb8c1417d38a1a205fdc8e79fc7e96344cd690dc43640",
+      "width": 60,
+      "height": 60,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-22@1x.png",
+      "bytes": 465,
+      "sha256": "89cafd74c28491d4da23d95da45473952d13acf96d132589e0e62f99eed38be4",
+      "width": 22,
+      "height": 22,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-22@2x.png",
+      "bytes": 971,
+      "sha256": "22788f6d27c82456e9562c59289bf9bd29b8c82568ed5f11b3aae1a5c6ad0b47",
+      "width": 44,
+      "height": 44,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-22@3x.png",
+      "bytes": 1542,
+      "sha256": "1516fad30df4d30879f1bea68f9e9bb2f284fa133d013f22759d9b6c4a94f7ca",
+      "width": 66,
+      "height": 66,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-24@1x.png",
+      "bytes": 519,
+      "sha256": "13b3c5357e21b1c07545f029d84f66ecf5c03bb402445c09cbddfc222acf13d1",
+      "width": 24,
+      "height": 24,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-24@2x.png",
+      "bytes": 1074,
+      "sha256": "8fb3e9746df621925addc4d6d382015a1dad2d6b1debc91b73649400509e9d48",
+      "width": 48,
+      "height": 48,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-24@3x.png",
+      "bytes": 1679,
+      "sha256": "51b751e43283c366651c079f51b7ea3561953543b7d7447e7f9d2b50448b9b20",
+      "width": 72,
+      "height": 72,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-32@1x.png",
+      "bytes": 697,
+      "sha256": "8c4a1db795b52691913b272ea455f4e66b220ad2e09f5c4a85f8005111c831aa",
+      "width": 32,
+      "height": 32,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-32@2x.png",
+      "bytes": 1459,
+      "sha256": "726bc4a62c1122aa7c480d3e69ab9eefdae0d9af3adf586b70ea3d0264b3a36f",
+      "width": 64,
+      "height": 64,
+      "alpha": true
+    },
+    {
+      "path": "menu-bar/png/GroveWhite-32@3x.png",
+      "bytes": 2263,
+      "sha256": "f4366354c2a599e3dbd67b5e8e2053c1b226416db09e4870fe89ac9e75bfc6d0",
+      "width": 96,
+      "height": 96,
+      "alpha": true
+    },
+    {
+      "path": "social/avatar-1024.png",
+      "bytes": 719532,
+      "sha256": "17b051ad0b62718a993e70227d0c94e24e6936b0b83fb4acc3572b6a2fe2070d",
+      "width": 1024,
+      "height": 1024,
+      "alpha": false
+    },
+    {
+      "path": "social/avatar-512.png",
+      "bytes": 214503,
+      "sha256": "90f22e438d1784cb32ed1a58187891695755496fbf86b7e5890051aa4be2697d",
+      "width": 512,
+      "height": 512,
+      "alpha": false
+    },
+    {
+      "path": "social/social-card-1200x630.jpg",
+      "bytes": 42194,
+      "sha256": "57fbfb3fbf3b04cc154190e100e74ced2e6e649f500e83bde8ece7bcfceca1d7",
+      "width": 1200,
+      "height": 630,
+      "alpha": false
+    },
+    {
+      "path": "social/social-card-1200x630.png",
+      "bytes": 123520,
+      "sha256": "024b32c69c4dfe6a676c7d539f029cb63dc024bbe33dbd96e774607558c99dc3",
+      "width": 1200,
+      "height": 630,
+      "alpha": true
+    },
+    {
+      "path": "web/apple-touch-icon.png",
+      "bytes": 33128,
+      "sha256": "0fe12725d018ef9c27dc1572bd494b7335bbb69e320cd6be59687043c498df33",
+      "width": 180,
+      "height": 180,
+      "alpha": false
+    },
+    {
+      "path": "web/favicon.ico",
+      "bytes": 32038,
+      "sha256": "787773494ff0ad9aa5550586115c1f59b3918edf58f5b6471e008a35d75ad617"
+    },
+    {
+      "path": "web/icon-16.png",
+      "bytes": 653,
+      "sha256": "9ada4ec9e03d87a30978207275ad2812ffbabbe047f36e2f55324d52dd25cb85",
+      "width": 16,
+      "height": 16,
+      "alpha": false
+    },
+    {
+      "path": "web/icon-192.png",
+      "bytes": 36837,
+      "sha256": "3b3b0c632e8256c070488842ae780db26868092d8db90a487995b3b3c3c07cd3",
+      "width": 192,
+      "height": 192,
+      "alpha": false
+    },
+    {
+      "path": "web/icon-32.png",
+      "bytes": 1704,
+      "sha256": "466025c58c9cb00e489c89c21072ae6ff3acc0d68b4f1329d820f815f92a5fbe",
+      "width": 32,
+      "height": 32,
+      "alpha": false
+    },
+    {
+      "path": "web/icon-48.png",
+      "bytes": 3289,
+      "sha256": "2cd9158a847ed92f818c79c87a3e100aa7f48f276934a207ff486fd662d0e786",
+      "width": 48,
+      "height": 48,
+      "alpha": false
+    },
+    {
+      "path": "web/icon-512.png",
+      "bytes": 214503,
+      "sha256": "90f22e438d1784cb32ed1a58187891695755496fbf86b7e5890051aa4be2697d",
+      "width": 512,
+      "height": 512,
+      "alpha": false
+    },
+    {
+      "path": "web/icon-96.png",
+      "bytes": 11443,
+      "sha256": "94078f0f753d783f8519df5fed88a17494f29035a3f9e60bae45ba14f94b0f9f",
+      "width": 96,
+      "height": 96,
+      "alpha": false
+    },
+    {
+      "path": "web/maskable-192.png",
+      "bytes": 24427,
+      "sha256": "d0594691f7844c6a0c05bd2275e92681e7e2cee8065ce05c37881119ce703c63",
+      "width": 192,
+      "height": 192,
+      "alpha": true
+    },
+    {
+      "path": "web/maskable-512.png",
+      "bytes": 154081,
+      "sha256": "faa1c1c52b983f2ba28f531fe8189383b978a93291c76919e7b1a6a285b22a2d",
+      "width": 512,
+      "height": 512,
+      "alpha": true
+    },
+    {
+      "path": "web/safari-pinned-tab.svg",
+      "bytes": 8996,
+      "sha256": "3970b8039c101200f9ce46d6d2733c28996045b943c057f3222993339725ce5c"
+    }
+  ]
+}

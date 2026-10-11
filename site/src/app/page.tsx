@@ -396,7 +396,7 @@ export default async function Home() {
               aria-hidden="true"
             />
             <div className="relative mx-auto max-w-6xl px-5 py-24 text-center sm:px-8 sm:py-32">
-              <Wordmark className="mx-auto size-8 text-ok" />
+              <Wordmark className="mx-auto size-14" />
               <h2 className="mx-auto mt-6 max-w-2xl text-3xl leading-[1.15] font-medium tracking-[-0.02em] text-balance sm:text-4xl">
                 Stop stopping servers to change branches.
               </h2>
@@ -460,6 +460,13 @@ export default async function Home() {
             </a>
           </p>
           <div className="flex items-center gap-6 font-mono text-xs">
+            <a
+              href="/brand/Grove-Brand-Assets.zip"
+              download
+              className="text-fg-dim transition-colors hover:text-fg"
+            >
+              Brand assets
+            </a>
             <a
               href={REPO}
               target="_blank"

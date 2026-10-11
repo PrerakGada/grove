@@ -3,7 +3,16 @@ PREFIX  ?= $(HOME)/.local/bin
 VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 LDFLAGS := -s -w -X github.com/PrerakGada/grove/cmd.Version=$(VERSION)
 
-.PHONY: build install uninstall test vet cross clean
+.PHONY: build install uninstall test vet cross clean brand brand-check site-build
+
+brand:
+	@pnpm --dir site brand:build
+
+brand-check:
+	@pnpm --dir site brand:check
+
+site-build:
+	@pnpm --dir site build
 
 build:
 	@go build -ldflags '$(LDFLAGS)' -o bin/$(BINARY) .

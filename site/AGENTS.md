@@ -34,6 +34,8 @@ Mono needs `font-feature-settings: "liga" 0, "calt" 0` — JetBrains Mono ligate
 
 ## Layout
 
+- The approved identity is **original Grove C**. Asset selection, formats and platform usage are documented in `../brand/README.md`. `scripts/build-brand.mjs` exports it; `brand-assets.json` pins every deployed copy. Normal builds run `scripts/check-site-brand.mjs` before Next.js. Keep this check self-contained within `site/` for deployment.
+
 - `src/lib/content.ts` — all copy, terminal captures, failure stories, commands
 - `src/components/BandRuler.tsx` — the hero diagram. Its mode toggle re-runs the
   predecessor's `band + slot*100` so the central claim can be falsified on the

@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "approvedSourceSha256": "ff13f9af8ff3244d4027bf3a41c1522f1bfda5c2204625a5736e24a28e8b2f1c",
+  "files": [
+    {
+      "path": "public/brand/Grove-Brand-Assets.zip",
+      "bytes": 22981374,
+      "sha256": "10a7a9c75b9b1e89f1255583d5149b119d9b2a2af1e8d1712cf95b957073dd07"
+    },
+    {
+      "path": "public/brand/grove-icon.png",
+      "bytes": 57418,
+      "sha256": "2a66c8122264ef35e54a63916a82428df8b313fbb28dff523fc4749742ca4c3e"
+    },
+    {
+      "path": "public/brand/grove-monochrome.svg",
+      "bytes": 8996,
+      "sha256": "3970b8039c101200f9ce46d6d2733c28996045b943c057f3222993339725ce5c"
+    },
+    {
+      "path": "public/brand/grove-original.png",
+      "bytes": 719532,
+      "sha256": "17b051ad0b62718a993e70227d0c94e24e6936b0b83fb4acc3572b6a2fe2070d"
+    },
+    {
+      "path": "public/brand/grove-transparent.png",
+      "bytes": 175504,
+      "sha256": "7e5b664fce70f1bc8706c118fce2cbdbc34485d80a8250278fbd65d60ee2d751"
+    },
+    {
+      "path": "public/brand/grove-white.svg",
+      "bytes": 8996,
+      "sha256": "9f25a2817cc070ac81cda02c9e3cfc44d712f6449e943b7a06944b52b3a10718"
+    },
+    {
+      "path": "public/brand/icon-16.png",
+      "bytes": 653,
+      "sha256": "9ada4ec9e03d87a30978207275ad2812ffbabbe047f36e2f55324d52dd25cb85"
+    },
+    {
+      "path": "public/brand/icon-192.png",
+      "bytes": 36837,
+      "sha256": "3b3b0c632e8256c070488842ae780db26868092d8db90a487995b3b3c3c07cd3"
+    },
+    {
+      "path": "public/brand/icon-32.png",
+      "bytes": 1704,
+      "sha256": "466025c58c9cb00e489c89c21072ae6ff3acc0d68b4f1329d820f815f92a5fbe"
+    },
+    {
+      "path": "public/brand/icon-48.png",
+      "bytes": 3289,
+      "sha256": "2cd9158a847ed92f818c79c87a3e100aa7f48f276934a207ff486fd662d0e786"
+    },
+    {
+      "path": "public/brand/icon-512.png",
+      "bytes": 214503,
+      "sha256": "90f22e438d1784cb32ed1a58187891695755496fbf86b7e5890051aa4be2697d"
+    },
+    {
+      "path": "public/brand/icon-96.png",
+      "bytes": 11443,
+      "sha256": "94078f0f753d783f8519df5fed88a17494f29035a3f9e60bae45ba14f94b0f9f"
+    },
+    {
+      "path": "public/brand/maskable-192.png",
+      "bytes": 24427,
+      "sha256": "d0594691f7844c6a0c05bd2275e92681e7e2cee8065ce05c37881119ce703c63"
+    },
+    {
+      "path": "public/brand/maskable-512.png",
+      "bytes": 154081,
+      "sha256": "faa1c1c52b983f2ba28f531fe8189383b978a93291c76919e7b1a6a285b22a2d"
+    },
+    {
+      "path": "public/brand/safari-pinned-tab.svg",
+      "bytes": 8996,
+      "sha256": "3970b8039c101200f9ce46d6d2733c28996045b943c057f3222993339725ce5c"
+    },
+    {
+      "path": "src/app/apple-icon.png",
+      "bytes": 33128,
+      "sha256": "0fe12725d018ef9c27dc1572bd494b7335bbb69e320cd6be59687043c498df33"
+    },
+    {
+      "path": "src/app/favicon.ico",
+      "bytes": 32038,
+      "sha256": "787773494ff0ad9aa5550586115c1f59b3918edf58f5b6471e008a35d75ad617"
+    },
+    {
+      "path": "src/app/icon.svg",
+      "bytes": 76907,
+      "sha256": "ff13f2774b743dc0da71ac2feac190815ed198212f66224559d4368a86199143"
+    }
+  ]
+}

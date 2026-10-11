@@ -6,3 +6,6 @@ dist/
 /*.png
 /*.jpeg
 .vercel
+
+# macOS Finder metadata
+.DS_Store
