@@ -95,7 +95,22 @@ func WaitListening(wtPath, svc string, port int, timeout time.Duration) error {
 //     1 and 2 only cover the ports the slot owns *now* — a server started
 //     before a port change, by hand, or by a raw package script, survives both.
 func Stop(cfg *config.Config, wtPath string, slot int) {
-	// 1. recorded process trees
+	stopRecorded(wtPath)
+	stopPorts(cfg, slot)
+	stopUnderPath(wtPath)
+}
+
+// StopUnslotted runs the two passes that do not need a slot, for a worktree the
+// registry has no allocation for. Passing slot 0 instead would be worse than
+// doing nothing: slot 0 is the main checkout, so the port sweep would kill the
+// main repository's servers.
+func StopUnslotted(wtPath string) {
+	stopRecorded(wtPath)
+	stopUnderPath(wtPath)
+}
+
+// 1. recorded process trees
+func stopRecorded(wtPath string) {
 	entries, _ := os.ReadDir(RunDir(wtPath))
 	for _, e := range entries {
 		if !strings.HasSuffix(e.Name(), ".pid") {
@@ -107,8 +122,10 @@ func Stop(cfg *config.Config, wtPath string, slot int) {
 		}
 		_ = os.Remove(pidFile(wtPath, svc))
 	}
+}
 
-	// 2. the slot's ports
+// 2. the slot's ports — dev servers fork children that outlive the pid file.
+func stopPorts(cfg *config.Config, slot int) {
 	ports := []int{}
 	for _, s := range cfg.Services {
 		ports = append(ports, Port(s, slot))
@@ -125,8 +142,12 @@ func Stop(cfg *config.Config, wtPath string, slot int) {
 			time.Sleep(2 * time.Second)
 		}
 	}
+}
 
-	// 3. the working-directory sweep
+// 3. the working-directory sweep — the pass everyone forgets. Passes 1 and 2
+// only cover ports the slot owns *now*, so a server started before a port
+// change, or started by hand, survives both.
+func stopUnderPath(wtPath string) {
 	for _, sig := range []platform.Signal{platform.SigTerm, platform.SigKill} {
 		victims := platform.ProcsUnder(wtPath, platform.ProcsMatching(procPatterns))
 		for _, pid := range victims {

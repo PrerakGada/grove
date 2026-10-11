@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/PrerakGada/grove/internal/config"
 	"github.com/PrerakGada/grove/internal/dbx"
 	"github.com/PrerakGada/grove/internal/runner"
 	"github.com/PrerakGada/grove/internal/ui"
@@ -73,15 +74,31 @@ func runDelete(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	return removeWorktree(cfg, root, name, wtPath, deleteKeepBranch, deleteKeepDB)
+}
+
+// removeWorktree performs the irreversible half of a deletion, in the order
+// that leaves nothing behind: stop what is running, destroy the database,
+// remove the checkout, free the slot, delete the branch.
+//
+// `delete` and `sweep` share it deliberately. Two copies of this sequence is
+// how the predecessor ended up with a convenient command that skipped a step —
+// the guards that decide *whether* to delete differ between the two commands,
+// but what deletion means must not.
+func removeWorktree(cfg *config.Config, root, name, wtPath string, keepBranch, keepDB bool) error {
 	branch := branchOf(root, wtPath)
 
 	slot, hasSlot := slotOf(cfg, name)
+	ui.Info("stopping anything still running ...")
 	if hasSlot {
-		ui.Info("stopping anything still running ...")
 		runner.Stop(cfg, wtPath, slot)
+	} else {
+		// No slot means no ports to sweep, but a recorded pid or a process
+		// whose working directory is in here can still outlive the removal.
+		runner.StopUnslotted(wtPath)
 	}
 
-	if cfg.HasDB() && !deleteKeepDB && hasSlot {
+	if cfg.HasDB() && !keepDB && hasSlot {
 		if env, err := dbx.NewEnv(cfg, root, wtPath, name, slot); err == nil {
 			env.Destroy()
 			ui.Ok("database container and volume removed")
@@ -98,7 +115,7 @@ func runDelete(cmd *cobra.Command, args []string) error {
 	releaseSlot(cfg, name)
 	ui.Ok("slot freed")
 
-	if !deleteKeepBranch && branch != "" {
+	if !keepBranch && branch != "" {
 		if err := exec.Command("git", "-C", root, "branch", "-D", branch).Run(); err != nil {
 			ui.Warn("could not delete branch %s — delete it manually if you meant to", branch)
 		} else {

@@ -18,6 +18,19 @@ type Worktree struct {
 	// Branch is empty for a detached HEAD.
 	Branch   string
 	Detached bool
+	// Head is the commit the worktree is checked out at.
+	Head string
+
+	// Locked marks a worktree the user pinned with `git worktree lock`.
+	// Removal must respect it: it is an explicit "not this one", and
+	// `git worktree remove --force` fails on it regardless.
+	Locked     bool
+	LockReason string
+	// Prunable marks a worktree git has already decided is stale, usually
+	// because its directory is gone. That is `grove prune`'s job, not a
+	// deletion candidate.
+	Prunable    bool
+	PruneReason string
 	// IsMain marks the primary checkout, which Grove treats as slot 0.
 	IsMain bool
 
@@ -59,8 +72,16 @@ func List(root string, cfg *config.Config) ([]Worktree, error) {
 			cur = &Worktree{Path: p, Name: filepath.Base(p), Changes: -1}
 		case cur == nil:
 			continue
+		case strings.HasPrefix(line, "HEAD "):
+			cur.Head = strings.TrimPrefix(line, "HEAD ")
 		case line == "detached":
 			cur.Detached = true
+		case line == "locked" || strings.HasPrefix(line, "locked "):
+			cur.Locked = true
+			cur.LockReason = strings.TrimSpace(strings.TrimPrefix(line, "locked"))
+		case line == "prunable" || strings.HasPrefix(line, "prunable "):
+			cur.Prunable = true
+			cur.PruneReason = strings.TrimSpace(strings.TrimPrefix(line, "prunable"))
 		case strings.HasPrefix(line, "branch "):
 			cur.Branch = strings.TrimPrefix(strings.TrimPrefix(line, "branch "), "refs/heads/")
 		}
@@ -124,8 +145,21 @@ func readMarker(dir string, names ...string) string {
 	return ""
 }
 
+// countChanges counts modified and untracked paths, excluding Grove's own
+// per-worktree artifacts.
+//
+// Those markers are written into every worktree root and nothing gitignores
+// them, so counting them reports a freshly provisioned, untouched worktree as
+// carrying two changes. That is wrong in `list`, and it is load-bearing in
+// `sweep`, which refuses to delete anything dirty: counted, no worktree Grove
+// created would ever be sweepable. Excluding them by path is safe either way —
+// a project that does gitignore them never had them in this output.
 func countChanges(dir string) int {
-	out, err := exec.Command("git", "-C", dir, "status", "--porcelain").Output()
+	args := []string{"-C", dir, "status", "--porcelain", "--"}
+	for _, p := range groveArtifacts {
+		args = append(args, ":(exclude)"+p)
+	}
+	out, err := exec.Command("git", args...).Output()
 	if err != nil {
 		return -1
 	}
@@ -134,6 +168,11 @@ func countChanges(dir string) int {
 		return 0
 	}
 	return len(strings.Split(s, "\n"))
+}
+
+// groveArtifacts are the paths Grove itself writes into a worktree root.
+var groveArtifacts = []string{
+	config.ModeFile, config.DepsFile, config.DBProfileFile, config.RunDir,
 }
 
 func realPath(p string) string {
